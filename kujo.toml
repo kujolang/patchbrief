@@ -1,0 +1,10 @@
+# PatchBrief kujo.toml — Kujo project configuration
+
+[project]
+name = "patchbrief"
+version = "0.1.0"
+description = "Local developer tool that inspects git diffs and generates structured implementation briefs."
+
+[kujo]
+minimum_version = "0.1.0"
+entry = "patchbrief.kujo"

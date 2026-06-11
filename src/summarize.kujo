@@ -1,0 +1,264 @@
+# Summarize module — analyzes git diff and generates structured summaries.
+
+from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
+from src.common import str_trim, str_contains, str_lower, str_join, str_ends_with
+
+# Language/extension to type mapping for summary descriptions.
+LANG_MAP := {
+	".kujo": "Kujo",
+	".rs": "Rust",
+	".py": "Python",
+	".js": "JavaScript",
+	".ts": "TypeScript",
+	".jsx": "React JSX",
+	".tsx": "React TSX",
+	".php": "PHP",
+	".rb": "Ruby",
+	".go": "Go",
+	".java": "Java",
+	".kt": "Kotlin",
+	".swift": "Swift",
+	".c": "C",
+	".cpp": "C++",
+	".h": "C/C++ Header",
+	".css": "CSS",
+	".html": "HTML",
+	".md": "Markdown",
+	".json": "JSON",
+	".yaml": "YAML",
+	".yml": "YAML",
+	".toml": "TOML",
+	".sql": "SQL",
+	".sh": "Shell",
+	".bash": "Bash",
+	".dockerfile": "Docker",
+	".tf": "Terraform",
+	".xml": "XML"
+}
+
+# Get the language label for a file extension.
+func lang_for_file(file_path) {
+	lower := str_lower(file_path)
+	if lower == "dockerfile" || str_ends_with(lower, "/dockerfile") {
+		return "Docker"
+	}
+	# Check each extension
+	extensions := [".kujo", ".rs", ".py", ".js", ".tsx", ".ts", ".jsx", ".php", ".rb", ".go", ".java", ".kt", ".swift", ".cpp", ".c", ".h", ".css", ".html", ".md", ".json", ".yaml", ".yml", ".toml", ".sql", ".sh", ".bash", ".xml"]
+	ei := 0
+	while ei < len(extensions) {
+		ext := to_string(extensions[ei])
+		if str_ends_with(lower, ext) {
+			return LANG_MAP[ext]
+		}
+		ei := ei + 1
+	}
+	return "Unknown"
+}
+
+# Analyze changed files and infer likely purpose.
+export func infer_purpose(files_list, diff_text) {
+	if len(files_list) == 0 {
+		return "No changes detected"
+	}
+	lower_diff := str_lower(diff_text)
+	purposes := []
+	# Check for common change patterns
+	if str_contains(lower_diff, "test") || str_contains(lower_diff, "spec") {
+		purposes := push(purposes, "Testing")
+	}
+	if str_contains(lower_diff, "fix") || str_contains(lower_diff, "bug") {
+		purposes := push(purposes, "Bug fix")
+	}
+	if str_contains(lower_diff, "feature") || str_contains(lower_diff, "add") {
+		purposes := push(purposes, "Feature addition")
+	}
+	if str_contains(lower_diff, "refactor") || str_contains(lower_diff, "cleanup") {
+		purposes := push(purposes, "Refactoring")
+	}
+	if str_contains(lower_diff, "doc") || str_contains(lower_diff, "readme") {
+		purposes := push(purposes, "Documentation")
+	}
+	if str_contains(lower_diff, "security") || str_contains(lower_diff, "auth") || str_contains(lower_diff, "vuln") {
+		purposes := push(purposes, "Security")
+	}
+	if str_contains(lower_diff, "perf") || str_contains(lower_diff, "optimiz") || str_contains(lower_diff, "speed") {
+		purposes := push(purposes, "Performance")
+	}
+	if str_contains(lower_diff, "config") || str_contains(lower_diff, "setting") {
+		purposes := push(purposes, "Configuration")
+	}
+	if str_contains(lower_diff, "deprecat") || str_contains(lower_diff, "remov") {
+		purposes := push(purposes, "Deprecation/Removal")
+	}
+	if len(purposes) == 0 {
+		purposes := push(purposes, "General changes")
+	}
+	return str_join(purposes, ", ")
+}
+
+# Identify risk areas based on changed files.
+export func identify_risks(files_list, diff_text) {
+	risks := []
+	lower_diff := str_lower(diff_text)
+	# Check for risky patterns
+	fi := 0
+	while fi < len(files_list) {
+		f := str_lower(to_string(files_list[fi]))
+		if str_contains(f, "auth") || str_contains(f, "login") || str_contains(f, "password") || str_contains(f, "token") || str_contains(f, "secret") {
+			risks := push(risks, "Authentication/authorization changes — review for security implications")
+		}
+		if str_contains(f, "database") || str_contains(f, "migration") || str_contains(f, "schema") {
+			risks := push(risks, "Database schema or query changes — verify migration safety")
+		}
+		if str_contains(f, "api") || str_contains(f, "route") || str_contains(f, "endpoint") || str_contains(f, "handler") {
+			risks := push(risks, "API/route changes — verify backward compatibility")
+		}
+		if str_contains(f, "config") || str_contains(f, ".env") || str_contains(f, "setting") {
+			risks := push(risks, "Configuration changes — verify environment-specific values")
+		}
+		if str_contains(f, "test") || str_contains(f, "spec") {
+			risks := push(risks, "Test changes — ensure tests actually validate the intended behavior")
+		}
+		fi := fi + 1
+	}
+	if str_contains(lower_diff, "eval(") || str_contains(lower_diff, "exec(") || str_contains(lower_diff, "system(") {
+		risks := push(risks, "Dangerous function calls detected (eval/exec/system) — security review required")
+	}
+	if str_contains(lower_diff, "TODO") || str_contains(lower_diff, "FIXME") || str_contains(lower_diff, "HACK") {
+		risks := push(risks, "Unresolved TODO/FIXME/HACK comments — review before merge")
+	}
+	if len(risks) == 0 {
+		risks := push(risks, "No high-risk patterns detected (heuristic check only)")
+	}
+	return risks
+}
+
+# Generate a Markdown summary.
+export func summarize_markdown() {
+	if is_git_repo() == false {
+		print("Error: Not a git repository. Run patchbrief inside a git repo.")
+		exit(1)
+	}
+	branch := current_branch()
+	repo := repo_name()
+	stat := diff_stat()
+	files := changed_files()
+	diff_text := full_diff()
+	if len(files) == 0 && stat["files"] == 0 {
+		print("# PatchBrief Summary")
+		print("")
+		print("**Repo:** " + repo)
+		print("**Branch:** " + branch)
+		print("")
+		print("No uncommitted changes detected.")
+		return
+	}
+	purpose := infer_purpose(files, diff_text)
+	risks := identify_risks(files, diff_text)
+	print("# PatchBrief Summary")
+	print("")
+	print("**Repo:** " + repo)
+	print("**Branch:** " + branch)
+	print("**Changed Files:** " + to_string(stat["files"]))
+	print("**Lines Added:** +" + to_string(stat["added"]))
+	print("**Lines Removed:** -" + to_string(stat["removed"]))
+	print("")
+	print("## Likely Purpose")
+	print("")
+	print(purpose)
+	print("")
+	print("## Changed Files")
+	print("")
+	# Show the git diff --stat output
+	print("```")
+	print(str_trim(stat["output"]))
+	print("```")
+	print("")
+	print("## File Details")
+	print("")
+	fi_idx := 0
+	while fi_idx < len(files) {
+		f := to_string(files[fi_idx])
+		lang := lang_for_file(f)
+		print("- `" + f + "` (" + lang + ")")
+		fi_idx := fi_idx + 1
+	}
+	print("")
+	print("## Risk Areas")
+	print("")
+	ri := 0
+	while ri < len(risks) {
+		print("- " + to_string(risks[ri]))
+		ri := ri + 1
+	}
+	print("")
+	print("## Recent Commits")
+	print("")
+	commits := recent_commits(5)
+	if len(commits) > 0 {
+		ci := 0
+		while ci < len(commits) {
+			print("- " + to_string(commits[ci]))
+			ci := ci + 1
+		}
+	} else {
+		print("No recent commits found.")
+	}
+	print("")
+	print("---")
+	print("*Generated by PatchBrief v0.1.0*")
+}
+
+
+# Generate a JSON summary.
+export func summarize_json(pretty_json) {
+	if is_git_repo() == false {
+		error_obj := {
+			"error": true,
+			"message": "Not a git repository. Run patchbrief inside a git repo."
+		}
+		print(to_json(error_obj))
+		exit(1)
+	}
+	branch := current_branch()
+	repo := repo_name()
+	stat := diff_stat()
+	files := changed_files()
+	diff_text := full_diff()
+	purpose := infer_purpose(files, diff_text)
+	risks := identify_risks(files, diff_text)
+	commits := recent_commits(5)
+	# Build file details array
+	file_details := []
+	fi_idx := 0
+	while fi_idx < len(files) {
+		f := to_string(files[fi_idx])
+		lang := lang_for_file(f)
+		entry := {
+			"path": f,
+			"language": lang
+		}
+		file_details := push(file_details, entry)
+		fi_idx := fi_idx + 1
+	}
+	output := {
+		"tool": "patchbrief",
+		"version": "0.1.0",
+		"repo": repo,
+		"branch": branch,
+		"summary": {
+			"files_changed": stat["files"],
+			"lines_added": stat["added"],
+			"lines_removed": stat["removed"]
+		},
+		"likely_purpose": purpose,
+		"files": file_details,
+		"risk_areas": risks,
+		"recent_commits": commits
+	}
+	if pretty_json == true {
+		print(to_json_pretty(output))
+		return
+	}
+	print(to_json(output))
+}

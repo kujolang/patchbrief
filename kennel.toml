@@ -1,0 +1,28 @@
+[package]
+name = "patchbrief"
+version = "0.1.0"
+description = "Local developer tool that inspects git diffs and generates structured implementation briefs. Dogfood showcase for the Kujo/Kujo ecosystem."
+license = "MIT"
+authors = ["Kujolang <contact@kujolang.ai"]
+repository = "https://github.com/kujolang/patchbrief"
+keywords = ["kujo", "git", "diff", "developer-tools", "dogfood"]
+categories = ["developer-tools"]
+readme = "README.md"
+
+[package.status]
+stage = "experimental"
+stability = "early"
+public_api = false
+notes = "MVP dogfood build. Not yet ready for production use."
+
+[kujo]
+minimum_version = "0.1.0"
+entry = "patchbrief.kujo"
+sources = ["src", "."]
+includes = ["README.md", "tests"]
+excludes = [".git", "kennel_packages", "dist", "build", "node_modules", ".dogfood"]
+
+[build]
+command = ""
+output = "dist"
+artifacts = []

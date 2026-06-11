@@ -1,0 +1,112 @@
+name: "patchbrief"
+goal: "Build a small showcase tool called PatchBrief that inspects the current repository diff and generates a structured implementation brief. The tool acts as both a useful developer utility and a dogfood test of the Kujo/Kujo ecosystem."
+id: "ef97af3d-2054-4695-9c5c-fde7ac2d5d46"
+status: "in-progress"
+version: "0.1.0"
+created_at: "2026-05-28T04:19:00Z"
+priority: "high"
+background: |
+  PatchBrief is a dual-purpose project:
+  1. Build a genuinely useful local developer tool for summarizing git diffs and generating implementation briefs.
+  2. Dogfood the entire Kujo/Kujo ecosystem to identify pain points, gaps, and areas for improvement.
+
+  The Kujo/Kujo ecosystem (kujo, kennel, spec, eval, scout, dispatch, mcp, leash, strata) is intended to become a programming language and toolchain for AI-native software development. This project stress-tests that claim by building a real tool using as many ecosystem pieces as possible.
+
+scope: |
+  MVP scope:
+  - Detect changed files in the current git repository
+  - Generate a Markdown summary of the diff
+  - Generate a JSON summary of the diff
+  - Suggest likely tests or validation steps based on changed files
+  - Produce a handoff note suitable for a reviewer or downstream agent
+  - Exit cleanly with useful error messages when not inside a git repo
+  - Include basic tests and validation checks
+  - Document ecosystem pain points discovered during development
+
+  Out of scope for MVP:
+  - Network services or APIs
+  - Large external dependencies
+  - AI/LLM-based summarization (pure rule-based for MVP)
+  - Integration with external project management tools
+  - Persistent configuration or state files
+
+non_goals:
+  - "AI/LLM-powered diff analysis (future enhancement)"
+  - "Git hosting platform integration (GitHub/GitLab API)"
+  - "Real-time file watching or auto-regeneration"
+  - "Multi-repo or monorepo-specific features"
+  - "Plugin system for custom analyzers"
+  - "Polished production UI"
+
+relevant_systems:
+  - "kujo (core language/runtime)"
+  - "kujo-kennel (package manager)"
+  - "spec (task definition)"
+  - "kujo-eval (validation framework)"
+  - "kujo-scout (codebase intelligence)"
+  - "kujo-dispatch (workflow orchestration)"
+  - "kujo-mcp (MCP server)"
+  - "kujo-agents-sdk (agent primitives)"
+  - "git (external dependency for diff inspection)"
+
+likely_files:
+  - "patchbrief.kujo (main entrypoint)"
+  - "src/summarize.kujo (diff analysis and summary generation)"
+  - "src/suggest_tests.kujo (test suggestion logic)"
+  - "src/handoff.kujo (handoff note generation)"
+  - "src/git.kujo (git command wrappers)"
+  - "src/common.kujo (shared utilities)"
+  - "tests/patchbrief_tests.kujo (test suite)"
+  - "kennel.toml (package manifest)"
+  - "kujo.toml (kujo project config)"
+  - "patchbrief.spec.yml (this spec)"
+  - ".dogfood/patchbrief/*.md (ecosystem testing docs)"
+
+acceptance_criteria:
+  - "`kujo run patchbrief.kujo summarize` prints a Markdown summary of git diff"
+  - "`kujo run patchbrief.kujo summarize --format json` prints valid JSON"
+  - "`kujo run patchbrief.kujo suggest-tests` prints test suggestions based on changed files"
+  - "`kujo run patchbrief.kujo handoff` prints a structured handoff note"
+  - "Running outside a git repo prints a clear error and exits non-zero"
+  - "Running with no changes prints an appropriate message"
+  - "All tests pass via `kujo test`"
+  - "JSON output validates against expected schema"
+  - "Ecosystem dogfood reports are complete in .dogfood/patchbrief/"
+
+eval_requirements:
+  - "command_succeeds: kujo run patchbrief.kujo summarize"
+  - "output_contains: kujo run patchbrief.kujo summarize -- expected output sections"
+  - "file_exists: generated output files"
+  - "exit_code: non-zero when run outside git repo"
+  - "json_path_value: validate JSON output structure"
+
+risks:
+  - "Git must be installed and accessible on PATH (external dependency)"
+  - "Large diffs could produce unwieldy output (mitigation: truncate in MVP)"
+  - "Test suggestion logic is heuristic-based and may miss important tests"
+  - "Ecosystem tools (spec, eval, kennel) may have bugs that slow development"
+  - "Kujo language limitations (no native YAML/TOML parsing, manual arg parsing) add friction"
+
+dependencies:
+  - "Kujo runtime (kujo binary at target/debug/kujo or target/release/kujo)"
+  - "Git (external, must be on PATH)"
+  - "spec (for spec validation)"
+  - "kujo-eval (for validation suite, optional for MVP)"
+
+review_expectations:
+  - "Code review of core diff analysis logic"
+  - "Review of ecosystem pain points documentation"
+  - "Manual testing of all CLI subcommands"
+
+human_approval_points:
+  - "After spec is validated"
+  - "After ecosystem inventory is complete"
+  - "Before adding features beyond MVP scope"
+
+estimated_effort: "2 days"
+tags:
+  - "dogfood"
+  - "ecosystem-testing"
+  - "developer-tools"
+  - "showcase"
+  - "mvp"

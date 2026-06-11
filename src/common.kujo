@@ -1,0 +1,115 @@
+# PatchBrief shared utilities.
+# Provides helpers for CLI arg parsing, string formatting, and common operations.
+
+# Parse subcommand from CLI args.
+# args() in Kujo returns only user arguments (script name is excluded).
+# Returns argv[0] when it is a non-flag command token.
+# PatchBrief intentionally requires command-first syntax.
+export func is_trueish(value) {
+	return value == true || value == 1
+}
+
+export func is_falseish(value) {
+	return value == false || value == 0
+}
+
+export func parse_subcommand(argv) {
+	if len(argv) < 1 {
+		return ""
+	}
+	arg := to_string(argv[0])
+	if is_trueish(starts_with(arg, "--")) {
+		return ""
+	}
+	return arg
+}
+
+# Check if a flag is present in CLI args.
+export func has_flag(argv, flag_name) {
+	mut idx := 0
+	while idx < len(argv) {
+		if to_string(argv[idx]) == flag_name {
+			return true
+		}
+		idx = idx + 1
+	}
+	return false
+}
+
+# Get the value of a flag from CLI args.
+# Returns default_value if the flag is not present.
+export func flag_value(argv, flag_name, default_value) {
+	mut idx := 0
+	while idx < len(argv) {
+		if to_string(argv[idx]) == flag_name {
+			if idx + 1 < len(argv) {
+				next := to_string(argv[idx + 1])
+				if is_falseish(starts_with(next, "--")) {
+					return next
+				}
+			}
+			return default_value
+		}
+		idx = idx + 1
+	}
+	return default_value
+}
+
+# Check if a string starts with a prefix.
+# Kujo's starts_with() may return int, so compare explicitly.
+export func str_starts_with(s, prefix) {
+	return is_trueish(starts_with(s, prefix))
+}
+
+# Check if a string contains a substring.
+# Kujo's contains() returns int (1 or 0), so compare explicitly.
+export func str_contains(s, substr) {
+	return is_trueish(contains(s, substr))
+}
+
+export func str_ends_with(s, suffix) {
+	return is_trueish(ends_with(s, suffix))
+}
+
+export func dict_has_key(map_obj, key_name) {
+	return is_trueish(has_key(map_obj, key_name))
+}
+
+# Trim whitespace from both ends of a string.
+export func str_trim(s) {
+	return trim(s)
+}
+
+# Convert a string to lowercase.
+export func str_lower(s) {
+	return to_lower(s)
+}
+
+# Join an array of strings with a separator.
+export func str_join(arr, sep) {
+	mut result := ""
+	mut i := 0
+	while i < len(arr) {
+		if i > 0 {
+			result = result + sep
+		}
+		result = result + to_string(arr[i])
+		i = i + 1
+	}
+	return result
+}
+
+# Get the current timestamp as an ISO-like string.
+export func timestamp_now() {
+	try {
+		result := execute("date -u +%Y-%m-%dT%H:%M:%SZ", {"timeout_ms": 3000})
+		return trim(to_string(result))
+	} except err {
+		return "unknown"
+	}
+}
+
+export func shell_quote(value) {
+	text := to_string(value)
+	return "'" + replace(text, "'", "'\"'\"'") + "'"
+}
