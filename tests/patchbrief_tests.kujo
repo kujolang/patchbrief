@@ -172,7 +172,9 @@ func test_invalid_summarize_format_errors() {
 
 # Test 17: summarize json error response is valid JSON outside a git repo
 func test_summarize_json_error_shape_outside_repo() {
-	cmd := "cd /tmp && kujo run /path/to/patchbrief/patchbrief.kujo -- summarize --format json 2>/dev/null"
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "cd /tmp && kujo run " + shell_quote(script_path) + " -- summarize --format json 2>/dev/null"
 	try {
 		_ := execute(cmd, {"timeout_ms": 20000})
 		assert(false, "summarize in non-repo should fail")

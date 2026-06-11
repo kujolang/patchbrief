@@ -217,7 +217,11 @@ export func summarize_json(pretty_json) {
 			"error": true,
 			"message": "Not a git repository. Run patchbrief inside a git repo."
 		}
-		print(to_json(error_obj))
+		if pretty_json == true {
+			print(to_json_pretty(error_obj))
+		} else {
+			print(to_json(error_obj))
+		}
 		exit(1)
 	}
 	branch := current_branch()

@@ -74,15 +74,6 @@ func main() {
 		print_version()
 		exit(0)
 	}
-	# Pre-flight check for commands that need a git repo
-	if subcommand == "summarize" || subcommand == "suggest-tests" || subcommand == "handoff" {
-		if is_git_repo() == false {
-			print("Error: Not a git repository.")
-			print("PatchBrief requires a git repository to inspect diffs.")
-			print("Run 'git init' to initialize a repository, or run 'patchbrief help' for usage.")
-			exit(1)
-		}
-	}
 	if subcommand == "summarize" {
 		format := flag_value(argv, "--format", "markdown")
 		pretty_json := has_flag(argv, "--pretty")
