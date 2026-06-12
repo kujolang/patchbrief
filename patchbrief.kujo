@@ -7,48 +7,65 @@
 #   kujo run patchbrief.kujo -- version
 #   kujo run patchbrief.kujo -- help
 
-from src.common import parse_subcommand, flag_value, has_flag, str_starts_with
+from src.common import parse_subcommand, flag_value, has_flag, str_starts_with, print_lines
 from src.git import is_git_repo
 
 VERSION := "0.1.0"
 
 func print_help() {
-	print("PatchBrief v" + VERSION)
-	print("")
-	print("A local developer tool that inspects git diffs and generates")
-	print("structured implementation briefs.")
-	print("")
-	print("Usage:")
-	print("  kujo run patchbrief.kujo -- summarize [--format markdown|json] [--pretty]")
-	print("  kujo run patchbrief.kujo -- suggest-tests")
-	print("  kujo run patchbrief.kujo -- handoff [--format markdown|json] [--pretty]")
-	print("  kujo run patchbrief.kujo -- version")
-	print("  kujo run patchbrief.kujo -- help")
-	print("")
-	print("Commands:")
-	print("  summarize     Generate a summary of the current git diff")
-	print("  suggest-tests Suggest test commands based on changed files")
-	print("  handoff       Generate a structured handoff note for reviewers")
-	print("  version       Print version information")
-	print("  help          Print this help message")
-	print("")
-	print("Options:")
-	print("  --format      Output format: markdown (default) or json")
-	print("  --pretty      Pretty-print JSON output when --format json is used")
-	print("")
-	print("Examples:")
-	print("  kujo run patchbrief.kujo -- summarize")
-	print("  kujo run patchbrief.kujo -- summarize --format json --pretty")
-	print("  kujo run patchbrief.kujo -- suggest-tests")
-	print("  kujo run patchbrief.kujo -- handoff")
-	print("")
-	print("Note: Use '--' before script arguments to avoid Kujo CLI flag parsing conflicts.")
+	print_lines([
+		"PatchBrief v" + VERSION,
+		"",
+		"A local developer tool that inspects git diffs and generates",
+		"structured implementation briefs.",
+		"",
+		"Usage:",
+		"  kujo run patchbrief.kujo -- summarize [--format markdown|json] [--pretty]",
+		"  kujo run patchbrief.kujo -- suggest-tests",
+		"  kujo run patchbrief.kujo -- handoff [--format markdown|json] [--pretty]",
+		"  kujo run patchbrief.kujo -- version",
+		"  kujo run patchbrief.kujo -- help",
+		"",
+		"Commands:",
+		"  summarize     Generate a summary of the current git diff",
+		"  suggest-tests Suggest test commands based on changed files",
+		"  handoff       Generate a structured handoff note for reviewers",
+		"  version       Print version information",
+		"  help          Print this help message",
+		"",
+		"Options:",
+		"  --format      Output format: markdown (default) or json",
+		"  --pretty      Pretty-print JSON output when --format json is used",
+		"",
+		"Examples:",
+		"  kujo run patchbrief.kujo -- summarize",
+		"  kujo run patchbrief.kujo -- summarize --format json --pretty",
+		"  kujo run patchbrief.kujo -- suggest-tests",
+		"  kujo run patchbrief.kujo -- handoff",
+		"",
+		"Note: Use '--' before script arguments to avoid Kujo CLI flag parsing conflicts."
+	])
 }
 
 func print_version() {
-	print("PatchBrief v" + VERSION)
-	print("A Kujo/Kujo ecosystem dogfood showcase tool.")
-	print("https://github.com/kujolang/patchbrief")
+	print_lines([
+		"PatchBrief v" + VERSION,
+		"A Kujo/Kujo ecosystem dogfood showcase tool.",
+		"https://github.com/kujolang/patchbrief"
+	])
+}
+
+func output_format(argv) {
+	format := flag_value(argv, "--format", "markdown")
+	lower_format := to_lower(format)
+	if lower_format != "markdown" && lower_format != "json" {
+		print_lines([
+			"Error: Invalid format '" + format + "'.",
+			"Valid formats are: markdown, json"
+		])
+		exit(2)
+	}
+	return lower_format
 }
 
 func main() {
@@ -62,9 +79,11 @@ func main() {
 		if len(argv) > 0 {
 			first := to_string(argv[0])
 			if str_starts_with(first, "--") {
-				print("Error: Command must come before PatchBrief flags.")
-				print("Example: kujo run patchbrief.kujo -- summarize --format json")
-				print("")
+				print_lines([
+					"Error: Command must come before PatchBrief flags.",
+					"Example: kujo run patchbrief.kujo -- summarize --format json",
+					""
+				])
 			}
 		}
 		print_help()
@@ -75,15 +94,9 @@ func main() {
 		exit(0)
 	}
 	if subcommand == "summarize" {
-		format := flag_value(argv, "--format", "markdown")
+		format := output_format(argv)
 		pretty_json := has_flag(argv, "--pretty")
-		lower_format := to_lower(format)
-		if lower_format != "markdown" && lower_format != "json" {
-			print("Error: Invalid format '" + format + "'.")
-			print("Valid formats are: markdown, json")
-			exit(2)
-		}
-		if lower_format == "json" {
+		if format == "json" {
 			from src.summarize import summarize_json
 			summarize_json(pretty_json)
 		} else {
@@ -98,15 +111,9 @@ func main() {
 		exit(0)
 	}
 	if subcommand == "handoff" {
-		format := flag_value(argv, "--format", "markdown")
+		format := output_format(argv)
 		pretty_json := has_flag(argv, "--pretty")
-		lower_format := to_lower(format)
-		if lower_format != "markdown" && lower_format != "json" {
-			print("Error: Invalid format '" + format + "'.")
-			print("Valid formats are: markdown, json")
-			exit(2)
-		}
-		if lower_format == "json" {
+		if format == "json" {
 			from src.handoff import handoff_json
 			handoff_json(pretty_json)
 		} else {

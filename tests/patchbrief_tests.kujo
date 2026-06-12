@@ -18,6 +18,46 @@ func test_help_prints_usage() {
 	assert(text_contains(output, "handoff"), "help should mention handoff command")
 }
 
+# Test 1b: help command output stays copy/paste stable
+func test_help_exact_output() {
+	from src.common import str_join
+	result := execute("kujo run patchbrief.kujo -- help 2>&1", {"timeout_ms": 15000})
+	output := to_string(result)
+	expected := str_join([
+		"PatchBrief v0.1.0",
+		"",
+		"A local developer tool that inspects git diffs and generates",
+		"structured implementation briefs.",
+		"",
+		"Usage:",
+		"  kujo run patchbrief.kujo -- summarize [--format markdown|json] [--pretty]",
+		"  kujo run patchbrief.kujo -- suggest-tests",
+		"  kujo run patchbrief.kujo -- handoff [--format markdown|json] [--pretty]",
+		"  kujo run patchbrief.kujo -- version",
+		"  kujo run patchbrief.kujo -- help",
+		"",
+		"Commands:",
+		"  summarize     Generate a summary of the current git diff",
+		"  suggest-tests Suggest test commands based on changed files",
+		"  handoff       Generate a structured handoff note for reviewers",
+		"  version       Print version information",
+		"  help          Print this help message",
+		"",
+		"Options:",
+		"  --format      Output format: markdown (default) or json",
+		"  --pretty      Pretty-print JSON output when --format json is used",
+		"",
+		"Examples:",
+		"  kujo run patchbrief.kujo -- summarize",
+		"  kujo run patchbrief.kujo -- summarize --format json --pretty",
+		"  kujo run patchbrief.kujo -- suggest-tests",
+		"  kujo run patchbrief.kujo -- handoff",
+		"",
+		"Note: Use '--' before script arguments to avoid Kujo CLI flag parsing conflicts."
+	], "\n") + "\n"
+	assert(output == expected, "help output should match the canonical text exactly")
+}
+
 # Test 2: version command prints version
 func test_version_prints_version() {
 	result := execute("kujo run patchbrief.kujo -- version 2>&1", {"timeout_ms": 15000})

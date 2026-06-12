@@ -99,6 +99,50 @@ export func str_join(arr, sep) {
 	return result
 }
 
+export func print_lines(lines) {
+	idx := 0
+	while idx < len(lines) {
+		print(to_string(lines[idx]))
+		idx := idx + 1
+	}
+}
+
+export func print_prefixed_lines(lines, prefix) {
+	idx := 0
+	while idx < len(lines) {
+		print(prefix + to_string(lines[idx]))
+		idx := idx + 1
+	}
+}
+
+export func print_wrapped_lines(lines, prefix, suffix) {
+	idx := 0
+	while idx < len(lines) {
+		print(prefix + to_string(lines[idx]) + suffix)
+		idx := idx + 1
+	}
+}
+
+export func print_markdown_section(title) {
+	print("")
+	print("## " + title)
+	print("")
+}
+
+export func print_fenced(text) {
+	print("```")
+	print(to_string(text))
+	print("```")
+}
+
+export func print_json(value, pretty_json) {
+	if pretty_json == true {
+		print(to_json_pretty(value))
+		return
+	}
+	print(to_json(value))
+}
+
 # Get the current timestamp as an ISO-like string.
 export func timestamp_now() {
 	try {
