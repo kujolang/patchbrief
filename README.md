@@ -5,25 +5,31 @@ A local developer tool that inspects git diffs and generates structured implemen
 ## Quick Start
 
 ```bash
-# Summarize current git diff
 kujo run patchbrief.kujo -- summarize
+```
 
-# JSON output for programmatic consumption
-kujo run patchbrief.kujo -- summarize --format json
+When there are no uncommitted changes, the output starts like this:
 
-# Pretty JSON for easier human review
-kujo run patchbrief.kujo -- summarize --format json --pretty
+```md
+# PatchBrief Summary
 
-# Get test suggestions
-kujo run patchbrief.kujo -- suggest-tests
+**Repo:** patchbrief
+**Branch:** main
 
-# Generate a handoff note for reviewers
-kujo run patchbrief.kujo -- handoff
+No uncommitted changes detected.
 ```
 
 Note: use `--` before PatchBrief arguments so Kujo does not parse tool flags as runtime flags.
 PatchBrief treats `help` and `version` as commands; `--help` and `--version`
 are not standalone aliases and will fall back to the command-order guidance.
+
+Common follow-up commands:
+
+```bash
+kujo run patchbrief.kujo -- summarize --format json --pretty
+kujo run patchbrief.kujo -- suggest-tests
+kujo run patchbrief.kujo -- handoff
+```
 
 ## Commands
 
@@ -53,6 +59,16 @@ are not standalone aliases and will fall back to the command-order guidance.
 ```bash
 kujo test
 ```
+
+## Agent and Contributor Notes
+
+Prioritize copyable examples over tests: examples should model the most token-efficient idioms we want agents to imitate.
+
+Canonical examples live in this README and the static help output in `patchbrief.kujo`. Tests in `tests/` are contract checks, not example style guides. The repo currently has no tracked fixtures, generated outputs, legacy demos, or expected-fail examples.
+
+When sweeping for readability, exclude generated or bulk paths unless a task explicitly targets them. Use the package exclusions as the default search hygiene list: `.git`, `kennel_packages`, `dist`, `build`, `node_modules`, and `.dogfood`.
+
+Keep CLI output byte-stable when refactoring report emitters. Add or update exact-output tests before changing copyable help text, command syntax, JSON shape, or Markdown section names.
 
 ## Project Structure
 
