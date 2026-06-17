@@ -1,7 +1,7 @@
 # Summarize module — analyzes git diff and generates structured summaries.
 
 from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
-from src.common import str_trim, str_contains, str_lower, str_join, str_ends_with, print_lines, print_prefixed_lines, print_markdown_section, print_fenced, print_json
+from src.common import str_trim, str_contains, str_lower, str_join, str_ends_with, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error, print_json
 
 # Language/extension to type mapping for summary descriptions.
 LANG_MAP := {
@@ -53,6 +53,18 @@ func lang_for_file(file_path) {
 		ei := ei + 1
 	}
 	return "Unknown"
+}
+
+func file_detail_lines(files_list) {
+	lines := []
+	fi_idx := 0
+	while fi_idx < len(files_list) {
+		f := to_string(files_list[fi_idx])
+		lang := lang_for_file(f)
+		lines := push(lines, "- `" + f + "` (" + lang + ")")
+		fi_idx := fi_idx + 1
+	}
+	return lines
 }
 
 # Analyze changed files and infer likely purpose.
@@ -136,7 +148,7 @@ export func identify_risks(files_list, diff_text) {
 # Generate a Markdown summary.
 export func summarize_markdown() {
 	if is_git_repo() == false {
-		print("Error: Not a git repository. Run patchbrief inside a git repo.")
+		print_not_git_repo_error()
 		exit(1)
 	}
 	branch := current_branch()
@@ -167,27 +179,17 @@ export func summarize_markdown() {
 		"**Lines Removed:** -" + to_string(stat["removed"])
 	])
 	print_markdown_section("Likely Purpose")
-	print(purpose)
+	print_markdown_paragraph(purpose)
 	print_markdown_section("Changed Files")
 	# Show the git diff --stat output
 	print_fenced(str_trim(stat["output"]))
 	print_markdown_section("File Details")
-	fi_idx := 0
-	while fi_idx < len(files) {
-		f := to_string(files[fi_idx])
-		lang := lang_for_file(f)
-		print("- `" + f + "` (" + lang + ")")
-		fi_idx := fi_idx + 1
-	}
+	print_lines(file_detail_lines(files))
 	print_markdown_section("Risk Areas")
 	print_prefixed_lines(risks, "- ")
 	print_markdown_section("Recent Commits")
 	commits := recent_commits(5)
-	if len(commits) > 0 {
-		print_prefixed_lines(commits, "- ")
-	} else {
-		print("No recent commits found.")
-	}
+	print_prefixed_or_fallback(commits, "- ", "No recent commits found.")
 	print_lines([
 		"",
 		"---",

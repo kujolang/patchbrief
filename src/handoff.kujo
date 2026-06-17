@@ -1,7 +1,7 @@
 # Handoff module — generates structured handoff notes for reviewers or downstream agents.
 
 from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
-from src.common import timestamp_now, str_join, print_lines, print_prefixed_lines, print_wrapped_lines, print_markdown_section, print_fenced, print_json
+from src.common import timestamp_now, str_join, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_wrapped_lines, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error, print_json
 from src.summarize import infer_purpose, identify_risks
 
 REVIEWER_CHECKLIST := [
@@ -19,7 +19,7 @@ NEXT_AGENT_COMMANDS := [
 # Generate a Markdown handoff note.
 export func handoff_markdown() {
 	if is_git_repo() == false {
-		print("Error: Not a git repository. Run patchbrief inside a git repo.")
+		print_not_git_repo_error()
 		exit(1)
 	}
 	branch := current_branch()
@@ -39,17 +39,13 @@ export func handoff_markdown() {
 		"**Changed Files:** " + to_string(stat["files"]) + " (+" + to_string(stat["added"]) + "/-" + to_string(stat["removed"]) + ")"
 	])
 	print_markdown_section("Summary")
-	print(purpose)
+	print_markdown_paragraph(purpose)
 	print_markdown_section("What Changed")
 	print_wrapped_lines(files, "- `", "`")
 	print_markdown_section("Risk Assessment")
 	print_prefixed_lines(risks, "- ")
 	print_markdown_section("Recent Commits")
-	if len(commits) > 0 {
-		print_prefixed_lines(commits, "- ")
-	} else {
-		print("No recent commits found.")
-	}
+	print_prefixed_or_fallback(commits, "- ", "No recent commits found.")
 	print_markdown_section("Reviewer Notes")
 	print_prefixed_lines(REVIEWER_CHECKLIST, "- [ ] ")
 	print_markdown_section("For the Next Agent/Developer")

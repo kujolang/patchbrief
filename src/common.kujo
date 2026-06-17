@@ -115,6 +115,14 @@ export func print_prefixed_lines(lines, prefix) {
 	}
 }
 
+export func print_prefixed_or_fallback(lines, prefix, fallback) {
+	if len(lines) > 0 {
+		print_prefixed_lines(lines, prefix)
+		return
+	}
+	print_lines([fallback])
+}
+
 export func print_wrapped_lines(lines, prefix, suffix) {
 	idx := 0
 	while idx < len(lines) {
@@ -124,15 +132,27 @@ export func print_wrapped_lines(lines, prefix, suffix) {
 }
 
 export func print_markdown_section(title) {
-	print("")
-	print("## " + title)
-	print("")
+	print_lines([
+		"",
+		"## " + title,
+		""
+	])
+}
+
+export func print_markdown_paragraph(text) {
+	print_lines([to_string(text)])
 }
 
 export func print_fenced(text) {
-	print("```")
-	print(to_string(text))
-	print("```")
+	print_lines([
+		"```",
+		to_string(text),
+		"```"
+	])
+}
+
+export func print_not_git_repo_error() {
+	print_lines(["Error: Not a git repository. Run patchbrief inside a git repo."])
 }
 
 export func print_json(value, pretty_json) {

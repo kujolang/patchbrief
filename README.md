@@ -70,6 +70,8 @@ When sweeping for readability, exclude generated or bulk paths unless a task exp
 
 Keep CLI output byte-stable when refactoring report emitters. Add or update exact-output tests before changing copyable help text, command syntax, JSON shape, or Markdown section names.
 
+Use the shared output helpers in `src/common.kujo` (`print_lines`, `print_prefixed_lines`, `print_prefixed_or_fallback`, `print_wrapped_lines`, `print_markdown_section`, `print_markdown_paragraph`, `print_fenced`, and `print_not_git_repo_error`) before adding repeated `print(...)` blocks.
+
 ## Project Structure
 
 ```

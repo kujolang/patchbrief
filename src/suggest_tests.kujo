@@ -1,7 +1,7 @@
 # Suggest tests module — analyzes changed files and suggests test commands.
 
 from src.git import is_git_repo, changed_files
-from src.common import str_contains, str_lower, str_ends_with, dict_has_key, print_lines, print_wrapped_lines, print_markdown_section
+from src.common import str_contains, str_lower, str_ends_with, dict_has_key, print_lines, print_prefixed_lines, print_wrapped_lines, print_markdown_section, print_not_git_repo_error
 
 # File pattern to test suggestion mapping.
 TEST_SUGGESTIONS := {
@@ -76,10 +76,26 @@ func suggestions_for_files(files_list) {
 	return result
 }
 
+func manual_checks_for_file(file_path) {
+	file_name := to_string(file_path)
+	lower_file := str_lower(file_name)
+	checks := []
+	if str_contains(lower_file, "readme") || str_contains(lower_file, ".md") {
+		checks := push(checks, "Preview Markdown rendering for `" + file_name + "`")
+	}
+	if str_contains(lower_file, "config") || str_contains(lower_file, ".env") {
+		checks := push(checks, "Verify environment-specific values in `" + file_name + "`")
+	}
+	if str_contains(lower_file, "migration") || str_contains(lower_file, "schema") {
+		checks := push(checks, "Test migration rollback for `" + file_name + "`")
+	}
+	return checks
+}
+
 # Generate test suggestions.
 export func suggest_tests() {
 	if is_git_repo() == false {
-		print("Error: Not a git repository. Run patchbrief inside a git repo.")
+		print_not_git_repo_error()
 		exit(1)
 	}
 	files := changed_files()
@@ -105,16 +121,7 @@ export func suggest_tests() {
 	# Per-file suggestions
 	fi_idx := 0
 	while fi_idx < len(files) {
-		f := str_lower(to_string(files[fi_idx]))
-		if str_contains(f, "readme") || str_contains(f, ".md") {
-			print("- Preview Markdown rendering for `" + to_string(files[fi_idx]) + "`")
-		}
-		if str_contains(f, "config") || str_contains(f, ".env") {
-			print("- Verify environment-specific values in `" + to_string(files[fi_idx]) + "`")
-		}
-		if str_contains(f, "migration") || str_contains(f, "schema") {
-			print("- Test migration rollback for `" + to_string(files[fi_idx]) + "`")
-		}
+		print_prefixed_lines(manual_checks_for_file(files[fi_idx]), "- ")
 		fi_idx := fi_idx + 1
 	}
 	print_lines([

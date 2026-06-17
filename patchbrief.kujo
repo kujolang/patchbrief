@@ -123,8 +123,10 @@ func main() {
 		exit(0)
 	}
 	# Unknown subcommand
-	print("Error: Unknown command '" + subcommand + "'")
-	print("Run 'kujo run patchbrief.kujo -- help' for usage.")
+	print_lines([
+		"Error: Unknown command '" + subcommand + "'",
+		"Run 'kujo run patchbrief.kujo -- help' for usage."
+	])
 	exit(2)
 }
 
