@@ -164,6 +164,28 @@ func test_summarize_json_pretty() {
 	assert(type(parsed) != "Error", "pretty summarize json should be valid JSON")
 }
 
+# Test 12c: staged and untracked files are included in summaries
+func test_summarize_json_includes_staged_and_untracked_files() {
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "tmp=$(mktemp -d); cd \"$tmp\" && git init -q && git config user.email test@example.com && git config user.name Test && printf 'base\\n' > tracked.kujo && git add tracked.kujo && git commit -m init -q && printf 'change\\n' >> tracked.kujo && git add tracked.kujo && printf 'notes\\n' > notes.md && kujo run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
+	result := execute(cmd, {"timeout_ms": 30000})
+	output := to_string(result)
+	parsed := parse_json(output)
+	assert(type(parsed) != "Error", "summary with staged and untracked files should be valid JSON")
+	assert(parsed["summary"]["files_changed"] == 2, "summary should count staged and untracked files")
+	assert(text_contains(output, "\"path\":\"tracked.kujo\""), "summary should include staged tracked file")
+	assert(text_contains(output, "\"path\":\"notes.md\""), "summary should include untracked file")
+}
+
+# Test 12d: risk messages are deduplicated across matching files
+func test_identify_risks_deduplicates_repeated_categories() {
+	from src.summarize import identify_risks
+	risks := identify_risks(["tests/unit_test.kujo", "tests/integration_spec.kujo"], "")
+	assert(len(risks) == 1, "repeated risk categories should only be reported once")
+	assert(text_contains(to_string(risks[0]), "Test changes"), "deduplicated risk should preserve the category text")
+}
+
 # Test 13: suggest-tests generates test suggestions
 func test_suggest_tests() {
 	result := execute("kujo run patchbrief.kujo -- suggest-tests 2>&1", {"timeout_ms": 30000})

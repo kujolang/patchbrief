@@ -4,6 +4,18 @@
 
 from src.common import str_starts_with, str_contains, str_trim, shell_quote
 
+func push_unique(items, value) {
+	text := to_string(value)
+	idx := 0
+	while idx < len(items) {
+		if to_string(items[idx]) == text {
+			return items
+		}
+		idx := idx + 1
+	}
+	return push(items, text)
+}
+
 # Check if the current directory is inside a git repository.
 export func is_git_repo() {
 	try {
@@ -57,9 +69,9 @@ export func repo_name() {
 # Get the diff stat summary (files changed, insertions, deletions).
 export func diff_stat() {
 	try {
-		output := execute("git diff --stat 2>/dev/null", {"timeout_ms": 10000})
-		text := str_trim(to_string(output))
-		if text == "" {
+		output := execute("git diff --no-ext-diff --stat HEAD 2>/dev/null", {"timeout_ms": 10000})
+		text := to_string(output)
+		if str_trim(text) == "" {
 			return {"ok": true, "output": "", "files": 0, "added": 0, "removed": 0}
 		}
 		lines := split(text, "\n")
@@ -114,18 +126,25 @@ export func diff_stat() {
 # Get the list of changed files.
 export func changed_files() {
 	try {
-		output := execute("git diff --name-only 2>/dev/null", {"timeout_ms": 10000})
-		text := str_trim(to_string(output))
-		if text == "" {
+		output := execute("git status --porcelain=v1 --untracked-files=all 2>/dev/null", {"timeout_ms": 10000})
+		text := to_string(output)
+		if str_trim(text) == "" {
 			return []
 		}
 		files := []
 		lines := split(text, "\n")
 		idx := 0
 		while idx < len(lines) {
-			line := str_trim(to_string(lines[idx]))
-			if line != "" {
-				files := push(files, line)
+			line := to_string(lines[idx])
+			if str_trim(line) != "" && len(line) >= 3 {
+				path_text := str_trim(substring(line, 3, len(line)))
+				if str_contains(path_text, " -> ") {
+					parts := split(path_text, " -> ")
+					path_text := str_trim(to_string(parts[len(parts) - 1]))
+				}
+				if path_text != "" {
+					files := push_unique(files, path_text)
+				}
 			}
 			idx := idx + 1
 		}
@@ -138,7 +157,7 @@ export func changed_files() {
 # Get the full diff output.
 export func full_diff() {
 	try {
-		output := execute("git diff 2>/dev/null", {"timeout_ms": 30000, "max_output_bytes": 1048576})
+		output := execute("git diff --no-ext-diff HEAD 2>/dev/null", {"timeout_ms": 30000, "max_output_bytes": 1048576})
 		return to_string(output)
 	} except err {
 		return ""
@@ -148,7 +167,7 @@ export func full_diff() {
 # Get the diff for a specific file.
 export func file_diff(file_path) {
 	try {
-		cmd := "git diff -- " + shell_quote(file_path)
+		cmd := "git diff --no-ext-diff HEAD -- " + shell_quote(file_path)
 		output := execute(cmd, {"timeout_ms": 10000})
 		return to_string(output)
 	} except err {

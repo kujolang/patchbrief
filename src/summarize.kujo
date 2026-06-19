@@ -67,6 +67,18 @@ func file_detail_lines(files_list) {
 	return lines
 }
 
+func push_unique_text(items, value) {
+	text := to_string(value)
+	idx := 0
+	while idx < len(items) {
+		if to_string(items[idx]) == text {
+			return items
+		}
+		idx := idx + 1
+	}
+	return push(items, text)
+}
+
 # Analyze changed files and infer likely purpose.
 export func infer_purpose(files_list, diff_text) {
 	if len(files_list) == 0 {
@@ -117,19 +129,19 @@ export func identify_risks(files_list, diff_text) {
 	while fi < len(files_list) {
 		f := str_lower(to_string(files_list[fi]))
 		if str_contains(f, "auth") || str_contains(f, "login") || str_contains(f, "password") || str_contains(f, "token") || str_contains(f, "secret") {
-			risks := push(risks, "Authentication/authorization changes — review for security implications")
+			risks := push_unique_text(risks, "Authentication/authorization changes — review for security implications")
 		}
 		if str_contains(f, "database") || str_contains(f, "migration") || str_contains(f, "schema") {
-			risks := push(risks, "Database schema or query changes — verify migration safety")
+			risks := push_unique_text(risks, "Database schema or query changes — verify migration safety")
 		}
 		if str_contains(f, "api") || str_contains(f, "route") || str_contains(f, "endpoint") || str_contains(f, "handler") {
-			risks := push(risks, "API/route changes — verify backward compatibility")
+			risks := push_unique_text(risks, "API/route changes — verify backward compatibility")
 		}
 		if str_contains(f, "config") || str_contains(f, ".env") || str_contains(f, "setting") {
-			risks := push(risks, "Configuration changes — verify environment-specific values")
+			risks := push_unique_text(risks, "Configuration changes — verify environment-specific values")
 		}
 		if str_contains(f, "test") || str_contains(f, "spec") {
-			risks := push(risks, "Test changes — ensure tests actually validate the intended behavior")
+			risks := push_unique_text(risks, "Test changes — ensure tests actually validate the intended behavior")
 		}
 		fi := fi + 1
 	}
@@ -174,7 +186,7 @@ export func summarize_markdown() {
 		"",
 		"**Repo:** " + repo,
 		"**Branch:** " + branch,
-		"**Changed Files:** " + to_string(stat["files"]),
+		"**Changed Files:** " + to_string(len(files)),
 		"**Lines Added:** +" + to_string(stat["added"]),
 		"**Lines Removed:** -" + to_string(stat["removed"])
 	])
@@ -182,7 +194,11 @@ export func summarize_markdown() {
 	print_markdown_paragraph(purpose)
 	print_markdown_section("Changed Files")
 	# Show the git diff --stat output
-	print_fenced(str_trim(stat["output"]))
+	if str_trim(stat["output"]) == "" {
+		print_fenced("No tracked diff stat available. Untracked files are listed below.")
+	} else {
+		print_fenced(str_trim(stat["output"]))
+	}
 	print_markdown_section("File Details")
 	print_lines(file_detail_lines(files))
 	print_markdown_section("Risk Areas")
@@ -235,7 +251,7 @@ export func summarize_json(pretty_json) {
 		"repo": repo,
 		"branch": branch,
 		"summary": {
-			"files_changed": stat["files"],
+			"files_changed": len(files),
 			"lines_added": stat["added"],
 			"lines_removed": stat["removed"]
 		},

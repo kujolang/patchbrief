@@ -36,7 +36,7 @@ export func handoff_markdown() {
 		"",
 		"**Date:** " + ts,
 		"**Branch:** " + branch,
-		"**Changed Files:** " + to_string(stat["files"]) + " (+" + to_string(stat["added"]) + "/-" + to_string(stat["removed"]) + ")"
+		"**Changed Files:** " + to_string(len(files)) + " (+" + to_string(stat["added"]) + "/-" + to_string(stat["removed"]) + ")"
 	])
 	print_markdown_section("Summary")
 	print_markdown_paragraph(purpose)
@@ -90,7 +90,7 @@ export func handoff_json(pretty_json) {
 		"repo": repo,
 		"branch": branch,
 		"summary": {
-			"files_changed": stat["files"],
+			"files_changed": len(files),
 			"lines_added": stat["added"],
 			"lines_removed": stat["removed"],
 			"likely_purpose": purpose
