@@ -1,6 +1,6 @@
 # PatchBrief
 
-A local developer tool that inspects git diffs and generates structured implementation briefs. Built in [Kujo/Kujo](https://github.com/kujolang/kujo) as an ecosystem dogfood showcase.
+A local developer tool that inspects repository working-tree changes and generates structured implementation briefs. Built in [Kujo/Kujo](https://github.com/kujolang/kujo) as an ecosystem dogfood showcase.
 
 ## Quick Start
 
@@ -22,6 +22,8 @@ No uncommitted changes detected.
 Note: use `--` before PatchBrief arguments so Kujo does not parse tool flags as runtime flags.
 PatchBrief treats `help` and `version` as commands; `--help` and `--version`
 are not standalone aliases and will fall back to the command-order guidance.
+
+PatchBrief reports staged, unstaged, and untracked files. Line counts come from Git's tracked diff stat, while untracked files are still listed and counted as changed files so a review handoff does not accidentally look clean.
 
 Common follow-up commands:
 
@@ -60,6 +62,12 @@ kujo run patchbrief.kujo -- handoff
 kujo test
 ```
 
+If `kujo` is not on `PATH`, use the local runtime directly:
+
+```bash
+/path/to/kujo/target/release/kujo test
+```
+
 ## Agent and Contributor Notes
 
 Prioritize copyable examples over tests: examples should model the most token-efficient idioms we want agents to imitate.
@@ -87,12 +95,13 @@ tests/
 patchbrief.spec.yml      # Spec file (task definition)
 kujo.toml               # Kujo project config
 kennel.toml             # Kennel package manifest
-.dogfood/               # Ecosystem dogfood reports
+docs/                   # Maintainer review notes and hardening backlogs
+.dogfood/               # Ignored generated ecosystem dogfood reports
 ```
 
 ## Status
 
-MVP — dogfood build. Testing the Kujo/Kujo ecosystem while building a useful tool.
+Dogfood beta. PatchBrief is useful for local review briefs today, with passing contract tests and intentionally small scope. It is not yet "enterprise complete": the next hardening work is tracked in `docs/patchbrief-hardening-backlog-2026-06-19.md`, especially around JSON schema contracts, configurable policies, CI packaging, and larger-repo performance proofs.
 
 ## License
 
