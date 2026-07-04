@@ -1,5 +1,9 @@
 # PatchBrief
 
+[![Version](https://img.shields.io/badge/version-1.0.0-black)](https://github.com/kujolang/patchbrief)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+[![built with Kujo](https://img.shields.io/badge/built%20with-Kujo-white.svg)](https://github.com/kujolang/kujo)
+
 A local developer tool that inspects repository working-tree changes and generates structured implementation briefs. Built in [Kujo](https://github.com/kujolang/kujo) as an ecosystem dogfood showcase.
 
 ## Quick Start
