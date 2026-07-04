@@ -1,6 +1,6 @@
 # PatchBrief
 
-A local developer tool that inspects repository working-tree changes and generates structured implementation briefs. Built in [Kujo/Kujo](https://github.com/kujolang/kujo) as an ecosystem dogfood showcase.
+A local developer tool that inspects repository working-tree changes and generates structured implementation briefs. Built in [Kujo](https://github.com/kujolang/kujo) as an ecosystem dogfood showcase.
 
 ## Quick Start
 

@@ -1,7 +1,7 @@
 [package]
 name = "patchbrief"
 version = "0.1.0"
-description = "Local developer tool that inspects git diffs and generates structured implementation briefs. Dogfood showcase for the Kujo/Kujo ecosystem."
+description = "Local developer tool that inspects git diffs and generates structured implementation briefs. Dogfood showcase for the Kujo ecosystem."
 license = "MIT"
 authors = ["Kujolang <contact@kujolang.ai"]
 repository = "https://github.com/kujolang/patchbrief"

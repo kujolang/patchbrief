@@ -50,7 +50,7 @@ func print_help() {
 func print_version() {
 	print_lines([
 		"PatchBrief v" + VERSION,
-		"A Kujo/Kujo ecosystem dogfood showcase tool.",
+		"A Kujo ecosystem dogfood showcase tool.",
 		"https://github.com/kujolang/patchbrief"
 	])
 }

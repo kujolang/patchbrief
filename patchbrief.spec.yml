@@ -1,5 +1,5 @@
 name: "patchbrief"
-goal: "Build a small showcase tool called PatchBrief that inspects the current repository diff and generates a structured implementation brief. The tool acts as both a useful developer utility and a dogfood test of the Kujo/Kujo ecosystem."
+goal: "Build a small showcase tool called PatchBrief that inspects the current repository diff and generates a structured implementation brief. The tool acts as both a useful developer utility and a dogfood test of the Kujo ecosystem."
 id: "ef97af3d-2054-4695-9c5c-fde7ac2d5d46"
 status: "in-progress"
 version: "0.1.0"
@@ -8,9 +8,9 @@ priority: "high"
 background: |
   PatchBrief is a dual-purpose project:
   1. Build a genuinely useful local developer tool for summarizing git diffs and generating implementation briefs.
-  2. Dogfood the entire Kujo/Kujo ecosystem to identify pain points, gaps, and areas for improvement.
+  2. Dogfood the entire Kujo ecosystem to identify pain points, gaps, and areas for improvement.
 
-  The Kujo/Kujo ecosystem (kujo, kennel, spec, eval, scout, dispatch, mcp, leash, strata) is intended to become a programming language and toolchain for AI-native software development. This project stress-tests that claim by building a real tool using as many ecosystem pieces as possible.
+  The Kujo ecosystem (kujo, kennel, spec, eval, scout, dispatch, mcp, leash, strata) is intended to become a programming language and toolchain for AI-native software development. This project stress-tests that claim by building a real tool using as many ecosystem pieces as possible.
 
 scope: |
   MVP scope:
