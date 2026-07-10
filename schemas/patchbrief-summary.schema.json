@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kujolang/patchbrief/schemas/summary-0.1.json",
+  "title": "PatchBrief summary JSON",
+  "type": "object",
+  "required": ["tool", "version", "repo", "branch", "summary", "files", "risk_areas", "likely_purpose", "recent_commits"],
+  "properties": {
+    "tool": {"const": "patchbrief"},
+    "version": {"type": "string"},
+    "repo": {"type": "string"},
+    "branch": {"type": "string"},
+    "summary": {"type": "object", "required": ["files_changed", "lines_added", "lines_removed"]},
+    "files": {"type": "array"},
+    "risk_areas": {"type": "array", "items": {"type": "string"}},
+    "likely_purpose": {"type": "string"},
+    "recent_commits": {"type": "array", "items": {"type": "string"}}
+  }
+}

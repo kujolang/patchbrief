@@ -107,6 +107,12 @@ docs/                   # Maintainer review notes and hardening backlogs
 
 Dogfood beta. PatchBrief is useful for local review briefs today, with passing contract tests and intentionally small scope. It is not yet "enterprise complete": the next hardening work is tracked in `docs/patchbrief-hardening-backlog-2026-06-19.md`, especially around JSON schema contracts, configurable policies, CI packaging, and larger-repo performance proofs.
 
+The current `summarize --format json` shape is documented by
+[schemas/patchbrief-summary.schema.json](schemas/patchbrief-summary.schema.json).
+This is an additive compatibility baseline for the `0.1.x` line; consumers
+should ignore unknown future fields. See [docs/security.md](docs/security.md)
+for local-data and heuristic-analysis boundaries.
+
 ## License
 
 MIT
