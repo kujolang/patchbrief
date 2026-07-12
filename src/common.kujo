@@ -155,14 +155,6 @@ export func print_not_git_repo_error() {
 	print_lines(["Error: Not a git repository. Run patchbrief inside a git repo."])
 }
 
-export func print_json(value, pretty_json) {
-	if pretty_json == true {
-		print(to_json_pretty(value))
-		return
-	}
-	print(to_json(value))
-}
-
 # Get the current timestamp as an ISO-like string.
 export func timestamp_now() {
 	try {

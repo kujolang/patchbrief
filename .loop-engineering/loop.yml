@@ -1,0 +1,36 @@
+objective: "Replace HLP-015 print_json with direct to_json and to_json_pretty calls while preserving CLI JSON output contracts."
+checklist_file: ""
+max_iterations: 8
+max_no_progress: 2
+max_consecutive_failures: 3
+
+allowed_actions:
+  - read_files
+  - edit_files
+  - run_tests
+  - commit_local_changes
+
+blocked_actions:
+  - deploy
+  - destructive_cleanup
+  - production_config_change
+
+eval_gates:
+  - id: tests
+    command: "KUJO=${KUJO:-../kujo/target/debug/kujo} kujo test"
+    required: true
+  - id: diff_check
+    command: "git diff --check"
+    required: true
+
+commit:
+  enabled: true
+  strategy: small_meaningful
+  push: true
+
+memory:
+  enabled: true
+  provider: strata
+  project: "Agent Notes"
+  mode: consolidate
+  retrieval_tests: true

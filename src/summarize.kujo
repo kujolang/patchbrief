@@ -1,7 +1,7 @@
 # Summarize module — analyzes git diff and generates structured summaries.
 
 from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
-from src.common import str_trim, str_contains, str_lower, str_join, str_ends_with, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error, print_json
+from src.common import str_trim, str_contains, str_lower, str_join, str_ends_with, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
 
 # Language/extension to type mapping for summary descriptions.
 LANG_MAP := {
@@ -221,7 +221,7 @@ export func summarize_json(pretty_json) {
 			"error": true,
 			"message": "Not a git repository. Run patchbrief inside a git repo."
 		}
-		print_json(error_obj, pretty_json)
+		if pretty_json == true { print(to_json_pretty(error_obj)) } else { print(to_json(error_obj)) }
 		exit(1)
 	}
 	branch := current_branch()
@@ -260,5 +260,5 @@ export func summarize_json(pretty_json) {
 		"risk_areas": risks,
 		"recent_commits": commits
 	}
-	print_json(output, pretty_json)
+	if pretty_json == true { print(to_json_pretty(output)) } else { print(to_json(output)) }
 }
