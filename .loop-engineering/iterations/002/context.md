@@ -4,5 +4,7 @@
 - git_head: bb1b41f
 - changed_files:
   - .loop-engineering/blockers.md
+  - .loop-engineering/iterations/001/context.md
+  - .loop-engineering/iterations/001/diff.patch
   - .loop-engineering/loop.yml
   - src/common.kujo

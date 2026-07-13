@@ -1,10 +1,12 @@
 # PatchBrief shared utilities.
 # Provides helpers for CLI arg parsing, string formatting, and common operations.
 
-# Parse subcommand from CLI args.
-# args() in Kujo returns only user arguments (script name is excluded).
-# Returns argv[0] when it is a non-flag command token.
-# PatchBrief intentionally requires command-first syntax.
+from cli import parse_subcommand, has_flag, flag_value
+
+export parse_subcommand := parse_subcommand
+export has_flag := has_flag
+export flag_value := flag_value
+
 export func is_trueish(value) {
 	return value == true || value == 1
 }
@@ -13,48 +15,10 @@ export func is_falseish(value) {
 	return value == false || value == 0
 }
 
-export func parse_subcommand(argv) {
-	if len(argv) < 1 {
-		return ""
-	}
-	arg := to_string(argv[0])
-	if is_trueish(starts_with(arg, "--")) {
-		return ""
-	}
-	return arg
-}
-
-# Check if a flag is present in CLI args.
-export func has_flag(argv, flag_name) {
-	mut idx := 0
-	while idx < len(argv) {
-		if to_string(argv[idx]) == flag_name {
-			return true
-		}
-		idx = idx + 1
-	}
-	return false
-}
-
-# Get the value of a flag from CLI args.
-# Returns default_value if the flag is not present.
-export func flag_value(argv, flag_name, default_value) {
-	mut idx := 0
-	while idx < len(argv) {
-		if to_string(argv[idx]) == flag_name {
-			if idx + 1 < len(argv) {
-				next := to_string(argv[idx + 1])
-				if is_falseish(starts_with(next, "--")) {
-					return next
-				}
-			}
-			return default_value
-		}
-		idx = idx + 1
-	}
-	return default_value
-}
-
+# Parse subcommand from CLI args.
+# args() in Kujo returns only user arguments (script name is excluded).
+# Returns argv[0] when it is a non-flag command token.
+# PatchBrief intentionally requires command-first syntax.
 # Check if a string starts with a prefix.
 # Kujo's starts_with() may return int, so compare explicitly.
 export func str_starts_with(s, prefix) {
