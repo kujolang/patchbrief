@@ -17,10 +17,10 @@ blocked_actions:
 
 eval_gates:
   - id: tests
-    command: "KUJO_BIN=${KUJO:-/Users/robertdevore/2026/Kujolang/kujo-repos/kujo/target/debug/kujo}; KUJO_MODULE_PATH=/Users/robertdevore/2026/Kujolang/kujo-repos/kujo/modules \"$KUJO_BIN\" test"
+    command: "KUJO_BIN=${KUJO:-/Users/robertdevore/2026/Kujolang/kujo-repos/kujo/target/debug/kujo}; export KUJO_MODULE_PATH=/Users/robertdevore/2026/Kujolang/kujo-repos/kujo/modules; $KUJO_BIN test"
     required: true
   - id: diff_check
-    command: "git diff --check -- $(git diff --name-only | grep -v '^.loop-engineering/' || true)"
+    command: 'files=$(git diff --name-only | grep -v "^\\.loop-engineering/" || true); if [ -n "$files" ]; then git diff --check -- $files; fi'
     required: true
 
 commit:
