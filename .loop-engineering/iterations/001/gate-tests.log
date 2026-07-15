@@ -1,5 +1,0 @@
-[✓] tests/patchbrief_tests.kujo (180.59ms)
-
-[✓] Passed 1/1 tests
-[i] Fixture outcomes: passed=1, failed=0, skipped=0, expected_fail=0, runnable=1, discovered=1
-[i] Runtime strategy: dual (vm_primary=1, interpreter_fallback=0)
