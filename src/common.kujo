@@ -1,12 +1,6 @@
 # PatchBrief shared utilities.
 # Provides helpers for CLI arg parsing, string formatting, and common operations.
 
-from cli import parse_subcommand, has_flag, flag_value
-
-export parse_subcommand := parse_subcommand
-export has_flag := has_flag
-export flag_value := flag_value
-
 export func is_trueish(value) {
 	return value == true || value == 1
 }
@@ -37,6 +31,53 @@ export func str_ends_with(s, suffix) {
 
 export func dict_has_key(map_obj, key_name) {
 	return is_trueish(has_key(map_obj, key_name))
+}
+
+export func parse_subcommand(argv) {
+	if !is_array(argv) || len(argv) == 0 {
+		return ""
+	}
+	if str_starts_with(to_string(argv[0]), "-") {
+		return ""
+	}
+	return to_string(argv[0])
+}
+
+export func has_flag(argv, name) {
+	if !is_array(argv) {
+		return false
+	}
+	i := 0
+	while i < len(argv) {
+		if to_string(argv[i]) == name {
+			return true
+		}
+		i = i + 1
+	}
+	return false
+}
+
+export func flag_value(argv, name, fallback) {
+	if !is_array(argv) {
+		return fallback
+	}
+	i := 0
+	while i < len(argv) {
+		token := to_string(argv[i])
+		if token == name {
+			next_index := i + 1
+			if next_index < len(argv) {
+				return to_string(argv[next_index])
+			}
+			return fallback
+		}
+		prefix := name + "="
+		if str_starts_with(token, prefix) {
+			return substring(token, len(prefix), len(token))
+		}
+		i = i + 1
+	}
+	return fallback
 }
 
 # Trim whitespace from both ends of a string.
