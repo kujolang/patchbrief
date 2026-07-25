@@ -68,6 +68,13 @@ func output_format(argv) {
 	return lower_format
 }
 
+func switch_to_caller_cwd() {
+	caller_cwd := env_or("PATCHBRIEF_CWD", "")
+	if caller_cwd != "" {
+		os_chdir(caller_cwd)
+	}
+}
+
 func main() {
 	argv := args()
 	if len(argv) < 1 {
@@ -98,15 +105,18 @@ func main() {
 		pretty_json := has_flag(argv, "--pretty")
 		if format == "json" {
 			from src.summarize import summarize_json
+			switch_to_caller_cwd()
 			summarize_json(pretty_json)
 		} else {
 			from src.summarize import summarize_markdown
+			switch_to_caller_cwd()
 			summarize_markdown()
 		}
 		exit(0)
 	}
 	if subcommand == "suggest-tests" {
 		from src.suggest_tests import suggest_tests
+		switch_to_caller_cwd()
 		suggest_tests()
 		exit(0)
 	}
@@ -115,9 +125,11 @@ func main() {
 		pretty_json := has_flag(argv, "--pretty")
 		if format == "json" {
 			from src.handoff import handoff_json
+			switch_to_caller_cwd()
 			handoff_json(pretty_json)
 		} else {
 			from src.handoff import handoff_markdown
+			switch_to_caller_cwd()
 			handoff_markdown()
 		}
 		exit(0)
