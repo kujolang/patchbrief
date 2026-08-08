@@ -24,7 +24,7 @@ func test_help_exact_output() {
 	result := execute("kujo run patchbrief.kujo -- help 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	expected := str_join([
-		"PatchBrief v0.1.0",
+		"PatchBrief v1.0.0",
 		"",
 		"A local developer tool that inspects git diffs and generates",
 		"structured implementation briefs.",
@@ -63,7 +63,7 @@ func test_version_prints_version() {
 	result := execute("kujo run patchbrief.kujo -- version 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	assert(text_contains(output, "PatchBrief"), "version should print tool name")
-	assert(text_contains(output, "0.1.0"), "version should print version number")
+	assert(text_contains(output, "1.0.0"), "version should print version number")
 }
 
 # Test 3: no subcommand prints help

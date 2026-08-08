@@ -1,6 +1,6 @@
 [package]
 name = "patchbrief"
-version = "0.1.0"
+version = "1.0.0"
 description = "Local developer tool that inspects git diffs and generates structured implementation briefs. Dogfood showcase for the Kujo ecosystem."
 license = "MIT"
 authors = ["Kujolang <contact@kujolang.ai"]
@@ -10,10 +10,10 @@ categories = ["developer-tools"]
 readme = "README.md"
 
 [package.status]
-stage = "experimental"
-stability = "early"
-public_api = false
-notes = "MVP dogfood build. Not yet ready for production use."
+stage = "production"
+stability = "stable"
+public_api = true
+notes = "Stable local rule-based diff summary, test suggestion, and handoff contracts for working-tree review."
 
 [kujo]
 minimum_version = "0.1.0"
