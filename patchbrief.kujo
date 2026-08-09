@@ -56,7 +56,14 @@ func print_version() {
 }
 
 func output_format(argv) {
-	format := flag_value(argv, "--format", "markdown")
+	mut format := "markdown"
+	if has_flag(argv, "--format") {
+		format = flag_value(argv, "--format", "")
+		if format == "" || str_starts_with(format, "--") {
+			print("Error: Missing value for --format")
+			exit(2)
+		}
+	}
 	lower_format := to_lower(format)
 	if lower_format != "markdown" && lower_format != "json" {
 		print_lines([

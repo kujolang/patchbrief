@@ -8,9 +8,17 @@ func text_contains(text, needle) {
 	return str_contains(text, needle)
 }
 
+KUJO_BIN := env_or("KUJO_BIN", "kujo")
+PATCHBRIEF_ENTRYPOINT := path_absolute("patchbrief.kujo")
+
+func patchbrief_command(arguments) {
+	from src.common import shell_quote
+	return shell_quote(KUJO_BIN) + " run " + shell_quote(PATCHBRIEF_ENTRYPOINT) + " -- " + arguments
+}
+
 # Test 1: help command prints usage and exits 0
 func test_help_prints_usage() {
-	result := execute("kujo run patchbrief.kujo -- help 2>&1", {"timeout_ms": 15000})
+	result := execute(patchbrief_command("help") + " 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	assert(text_contains(output, "Usage"), "help should print usage information")
 	assert(text_contains(output, "summarize"), "help should mention summarize command")
@@ -21,7 +29,7 @@ func test_help_prints_usage() {
 # Test 1b: help command output stays copy/paste stable
 func test_help_exact_output() {
 	from src.common import str_join
-	result := execute("kujo run patchbrief.kujo -- help 2>&1", {"timeout_ms": 15000})
+	result := execute(patchbrief_command("help") + " 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	expected := str_join([
 		"PatchBrief v1.0.0",
@@ -60,7 +68,7 @@ func test_help_exact_output() {
 
 # Test 2: version command prints version
 func test_version_prints_version() {
-	result := execute("kujo run patchbrief.kujo -- version 2>&1", {"timeout_ms": 15000})
+	result := execute(patchbrief_command("version") + " 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	assert(text_contains(output, "PatchBrief"), "version should print tool name")
 	assert(text_contains(output, "1.0.0"), "version should print version number")
@@ -68,20 +76,17 @@ func test_version_prints_version() {
 
 # Test 3: no subcommand prints help
 func test_no_subcommand_prints_help() {
-	result := execute("kujo run patchbrief.kujo 2>&1", {"timeout_ms": 15000})
+	result := execute(patchbrief_command("") + " 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	assert(text_contains(output, "Usage"), "no subcommand should print usage")
 }
 
 # Test 4: unknown subcommand exits with error
 func test_unknown_subcommand_errors() {
-	try {
-		_ := execute("kujo run patchbrief.kujo -- nonexistent-command 2>&1", {"timeout_ms": 15000})
-		assert(false, "expected error for unknown command")
-	} except err {
-		msg := to_string(err)
-		assert(text_contains(msg, "Error") || text_contains(msg, "Unknown") || text_contains(msg, "exitcode"), "unknown command should error")
-	}
+	result := execute_status(patchbrief_command("nonexistent-command"), {"timeout_ms": 15000})
+	assert(result.exitcode == 2, "unknown command should exit 2")
+	output := to_string(result.stdout) + to_string(result.stderr)
+	assert(text_contains(output, "Unknown command 'nonexistent-command'"), "unknown command should name the invalid command")
 }
 
 # Test 5: git module detects repo correctly
@@ -137,14 +142,14 @@ func test_flag_value() {
 
 # Test 11: summarize generates markdown output
 func test_summarize_markdown() {
-	result := execute("kujo run patchbrief.kujo -- summarize 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("summarize") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "PatchBrief Summary"), "summarize should produce markdown heading")
 }
 
 # Test 12: summarize --format json generates valid JSON structure
 func test_summarize_json() {
-	result := execute("kujo run patchbrief.kujo -- summarize --format json 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("summarize --format json") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "\"repo\":"), "json output should contain repo field")
 	assert(text_contains(output, "\"branch\":"), "json output should contain branch field")
@@ -157,7 +162,7 @@ func test_summarize_json() {
 
 # Test 12b: summarize --format json --pretty produces pretty-printed JSON
 func test_summarize_json_pretty() {
-	result := execute("kujo run patchbrief.kujo -- summarize --format json --pretty 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("summarize --format json --pretty") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "\n  \"repo\""), "pretty json should contain indentation")
 	parsed := parse_json(output)
@@ -168,7 +173,7 @@ func test_summarize_json_pretty() {
 func test_summarize_json_includes_staged_and_untracked_files() {
 	from src.common import shell_quote
 	script_path := path_absolute("patchbrief.kujo")
-	cmd := "tmp=$(mktemp -d); cd \"$tmp\" && git init -q && git config user.email test@example.com && git config user.name Test && printf 'base\\n' > tracked.kujo && git add tracked.kujo && git commit -m init -q && printf 'change\\n' >> tracked.kujo && git add tracked.kujo && printf 'notes\\n' > notes.md && kujo run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
+	cmd := "tmp=$(mktemp -d); cd \"$tmp\" && git init -q && git config user.email test@example.com && git config user.name Test && printf 'base\\n' > tracked.kujo && git add tracked.kujo && git commit -m init -q && printf 'change\\n' >> tracked.kujo && git add tracked.kujo && printf 'notes\\n' > notes.md && " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
 	result := execute(cmd, {"timeout_ms": 30000})
 	output := to_string(result)
 	parsed := parse_json(output)
@@ -188,14 +193,14 @@ func test_identify_risks_deduplicates_repeated_categories() {
 
 # Test 13: suggest-tests generates test suggestions
 func test_suggest_tests() {
-	result := execute("kujo run patchbrief.kujo -- suggest-tests 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("suggest-tests") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "Test Suggestions"), "suggest-tests should produce heading")
 }
 
 # Test 14: handoff generates handoff note
 func test_handoff_markdown() {
-	result := execute("kujo run patchbrief.kujo -- handoff 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("handoff") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "Handoff Note"), "handoff should produce heading")
 	assert(text_contains(output, "Reviewer Notes"), "handoff should contain reviewer checklist")
@@ -203,7 +208,7 @@ func test_handoff_markdown() {
 
 # Test 15: handoff --format json generates valid JSON handoff
 func test_handoff_json() {
-	result := execute("kujo run patchbrief.kujo -- handoff --format json 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("handoff --format json") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "\"format\":\"patchbrief-handoff\""), "json handoff should contain format field")
 	assert(text_contains(output, "\"reviewer_checklist\":"), "json handoff should contain checklist")
@@ -214,7 +219,7 @@ func test_handoff_json() {
 
 # Test 15b: handoff --format json --pretty produces pretty-printed JSON
 func test_handoff_json_pretty() {
-	result := execute("kujo run patchbrief.kujo -- handoff --format json --pretty 2>&1", {"timeout_ms": 30000})
+	result := execute(patchbrief_command("handoff --format json --pretty") + " 2>&1", {"timeout_ms": 30000})
 	output := to_string(result)
 	assert(text_contains(output, "\n  \"repo\""), "pretty handoff json should contain indentation")
 	parsed := parse_json(output)
@@ -223,38 +228,37 @@ func test_handoff_json_pretty() {
 
 # Test 16: invalid summarize format exits with usage error
 func test_invalid_summarize_format_errors() {
-	try {
-		_ := execute("kujo run patchbrief.kujo -- summarize --format yaml 2>&1", {"timeout_ms": 15000})
-		assert(false, "invalid format should return a non-zero exit")
-	} except err {
-		msg := to_string(err)
-		assert(text_contains(msg, "Invalid format") || text_contains(msg, "exitcode") || text_contains(msg, "Error"), "invalid format should report an error")
-	}
+	result := execute_status(patchbrief_command("summarize --format yaml"), {"timeout_ms": 15000})
+	assert(result.exitcode == 2, "invalid format should exit 2")
+	output := to_string(result.stdout) + to_string(result.stderr)
+	assert(text_contains(output, "Invalid format 'yaml'"), "invalid format should name the invalid value")
+}
+
+func test_missing_summarize_format_value_errors() {
+	result := execute_status(patchbrief_command("summarize --format"), {"timeout_ms": 15000})
+	assert(result.exitcode == 2, "missing format value should exit 2")
+	output := to_string(result.stdout) + to_string(result.stderr)
+	assert(text_contains(output, "Missing value for --format"), "missing format value should have a field-specific diagnostic")
 }
 
 # Test 17: summarize json error response is valid JSON outside a git repo
 func test_summarize_json_error_shape_outside_repo() {
 	from src.common import shell_quote
 	script_path := path_absolute("patchbrief.kujo")
-	cmd := "cd /tmp && kujo run " + shell_quote(script_path) + " -- summarize --format json 2>/dev/null"
-	try {
-		_ := execute(cmd, {"timeout_ms": 20000})
-		assert(false, "summarize in non-repo should fail")
-	} except err {
-		msg := to_string(err)
-		# Error payload should include JSON body from the tool even when execute raises on exit code.
-		open_idx := index_of(msg, "{")
-		if open_idx >= 0 {
-			json_text := substring(msg, open_idx, len(msg))
-			parsed := parse_json(json_text)
-			assert(type(parsed) != "Error", "non-repo json error payload should be valid JSON")
-		}
-	}
+	cmd := "cd /tmp && " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>/dev/null"
+	result := execute_status(cmd, {"timeout_ms": 20000})
+	assert(result.exitcode == 1, "summarize in non-repo should exit 1")
+	json_text := trim(to_string(result.stdout))
+	assert(json_text != "", "non-repo JSON error should emit a response body")
+	parsed := parse_json(json_text)
+	assert(type(parsed) != "Error", "non-repo json error payload should be valid JSON")
+	assert(parsed["error"] == true, "non-repo JSON error should set the error flag")
+	assert(parsed["message"] == "Not a git repository. Run patchbrief inside a git repo.", "non-repo JSON error should expose the stable diagnostic")
 }
 
 # Test 18: leading flags should show command-order guidance
 func test_leading_flag_prints_guidance() {
-	result := execute("kujo run patchbrief.kujo -- --format json 2>&1", {"timeout_ms": 15000})
+	result := execute(patchbrief_command("--format json") + " 2>&1", {"timeout_ms": 15000})
 	output := to_string(result)
 	assert(text_contains(output, "Command must come before PatchBrief flags"), "should explain command-first syntax")
 }
@@ -272,3 +276,30 @@ func test_str_join() {
 	result := str_join(["a", "b", "c"], ", ")
 	assert(result == "a, b, c", "should join with separator")
 }
+
+test_help_prints_usage()
+test_help_exact_output()
+test_version_prints_version()
+test_no_subcommand_prints_help()
+test_unknown_subcommand_errors()
+test_git_is_repo_detection()
+test_git_current_branch()
+test_git_repo_name()
+test_parse_subcommand()
+test_has_flag()
+test_flag_value()
+test_summarize_markdown()
+test_summarize_json()
+test_summarize_json_pretty()
+test_summarize_json_includes_staged_and_untracked_files()
+test_identify_risks_deduplicates_repeated_categories()
+test_suggest_tests()
+test_handoff_markdown()
+test_handoff_json()
+test_handoff_json_pretty()
+test_invalid_summarize_format_errors()
+test_missing_summarize_format_value_errors()
+test_summarize_json_error_shape_outside_repo()
+test_leading_flag_prints_guidance()
+test_str_starts_with()
+test_str_join()
