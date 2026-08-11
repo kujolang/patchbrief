@@ -36,13 +36,13 @@ GENERAL_VALIDATION := [
 ]
 
 # Get unique test suggestions for a set of files.
-func suggestions_for_files(files_list) {
+export func suggestions_for_files(files_list) {
 	suggestions_set := {}
 	result := []
 	fi := 0
 	while fi < len(files_list) {
 		f := str_lower(to_string(files_list[fi]))
-		is_dockerfile := f == "dockerfile" || str_ends_with(f, "/dockerfile")
+		is_dockerfile := f == "dockerfile" || str_ends_with(f, "/dockerfile") || str_ends_with(f, ".dockerfile")
 		extensions := [".kujo", ".rs", ".py", ".js", ".ts", ".jsx", ".tsx", ".php", ".rb", ".go", ".java", ".kt", ".swift", ".sh", ".md", ".css", ".json", ".yaml", ".yml", ".sql", ".dockerfile", ".tf"]
 		ei := 0
 		while ei < len(extensions) {
@@ -76,11 +76,11 @@ func suggestions_for_files(files_list) {
 	return result
 }
 
-func manual_checks_for_file(file_path) {
+export func manual_checks_for_file(file_path) {
 	file_name := to_string(file_path)
 	lower_file := str_lower(file_name)
 	checks := []
-	if str_contains(lower_file, "readme") || str_contains(lower_file, ".md") {
+	if str_contains(lower_file, "readme") || str_ends_with(lower_file, ".md") {
 		checks := push(checks, "Preview Markdown rendering for `" + file_name + "`")
 	}
 	if str_contains(lower_file, "config") || str_contains(lower_file, ".env") {

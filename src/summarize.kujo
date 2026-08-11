@@ -1,7 +1,7 @@
 # Summarize module — analyzes git diff and generates structured summaries.
 
 from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
-from src.common import str_trim, str_contains, str_lower, str_join, str_ends_with, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
+from src.common import str_trim, str_contains, str_lower, str_join, str_starts_with, str_ends_with, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
 
 # Language/extension to type mapping for summary descriptions.
 LANG_MAP := {
@@ -37,13 +37,13 @@ LANG_MAP := {
 }
 
 # Get the language label for a file extension.
-func lang_for_file(file_path) {
+export func lang_for_file(file_path) {
 	lower := str_lower(file_path)
-	if lower == "dockerfile" || str_ends_with(lower, "/dockerfile") {
+	if lower == "dockerfile" || str_ends_with(lower, "/dockerfile") || str_ends_with(lower, ".dockerfile") {
 		return "Docker"
 	}
 	# Check each extension
-	extensions := [".kujo", ".rs", ".py", ".js", ".tsx", ".ts", ".jsx", ".php", ".rb", ".go", ".java", ".kt", ".swift", ".cpp", ".c", ".h", ".css", ".html", ".md", ".json", ".yaml", ".yml", ".toml", ".sql", ".sh", ".bash", ".xml"]
+	extensions := [".kujo", ".rs", ".py", ".js", ".tsx", ".ts", ".jsx", ".php", ".rb", ".go", ".java", ".kt", ".swift", ".cpp", ".c", ".h", ".css", ".html", ".md", ".json", ".yaml", ".yml", ".toml", ".sql", ".sh", ".bash", ".tf", ".xml"]
 	ei := 0
 	while ei < len(extensions) {
 		ext := to_string(extensions[ei])
@@ -123,7 +123,17 @@ export func infer_purpose(files_list, diff_text) {
 # Identify risk areas based on changed files.
 export func identify_risks(files_list, diff_text) {
 	risks := []
-	lower_diff := str_lower(diff_text)
+	added_lines := []
+	diff_lines := split(to_string(diff_text), "\n")
+	di := 0
+	while di < len(diff_lines) {
+		line := to_string(diff_lines[di])
+		if str_starts_with(line, "+") && str_starts_with(line, "+++") == false {
+			added_lines := push(added_lines, substring(line, 1, len(line)))
+		}
+		di := di + 1
+	}
+	lower_diff := str_lower(str_join(added_lines, "\n"))
 	# Check for risky patterns
 	fi := 0
 	while fi < len(files_list) {
@@ -148,7 +158,7 @@ export func identify_risks(files_list, diff_text) {
 	if str_contains(lower_diff, "eval(") || str_contains(lower_diff, "exec(") || str_contains(lower_diff, "system(") {
 		risks := push(risks, "Dangerous function calls detected (eval/exec/system) — security review required")
 	}
-	if str_contains(lower_diff, "TODO") || str_contains(lower_diff, "FIXME") || str_contains(lower_diff, "HACK") {
+	if str_contains(lower_diff, "todo") || str_contains(lower_diff, "fixme") || str_contains(lower_diff, "hack") {
 		risks := push(risks, "Unresolved TODO/FIXME/HACK comments — review before merge")
 	}
 	if len(risks) == 0 {
