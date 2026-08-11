@@ -8,6 +8,29 @@ func text_contains(text, needle) {
 	return str_contains(text, needle)
 }
 
+func list_contains_text(items, needle) {
+	idx := 0
+	while idx < len(items) {
+		if text_contains(to_string(items[idx]), needle) {
+			return true
+		}
+		idx := idx + 1
+	}
+	return false
+}
+
+func json_files_include(parsed, expected_path) {
+	files := parsed["files"]
+	idx := 0
+	while idx < len(files) {
+		if files[idx]["path"] == expected_path {
+			return true
+		}
+		idx := idx + 1
+	}
+	return false
+}
+
 KUJO_BIN := env_or("KUJO_BIN", "kujo")
 PATCHBRIEF_ENTRYPOINT := path_absolute("patchbrief.kujo")
 
@@ -241,6 +264,95 @@ func test_missing_summarize_format_value_errors() {
 	assert(text_contains(output, "Missing value for --format"), "missing format value should have a field-specific diagnostic")
 }
 
+# Regression 1: equals-style format options must be parsed, not ignored.
+func test_equals_style_format_is_honored() {
+	invalid := execute_status(patchbrief_command("summarize --format=xml"), {"timeout_ms": 15000})
+	assert(invalid.exitcode == 2, "invalid equals-style format should exit 2")
+	invalid_output := to_string(invalid.stdout) + to_string(invalid.stderr)
+	assert(text_contains(invalid_output, "Invalid format 'xml'"), "equals-style format should reach format validation")
+	valid := execute(patchbrief_command("summarize --format=json") + " 2>&1", {"timeout_ms": 30000})
+	parsed := parse_json(to_string(valid))
+	assert(type(parsed) != "Error", "valid equals-style json format should emit JSON")
+}
+
+# Regression 2: porcelain paths must survive quoting, whitespace, and arrows.
+func test_changed_files_preserve_unusual_paths() {
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "tmp=$(mktemp -d); cd \"$tmp\" && git init -q && git config user.email test@example.com && git config user.name Test && printf 'base\\n' > base.txt && git add base.txt && git commit -m init -q && printf 'x\\n' > 'café.md' && printf 'x\\n' > 'literal -> arrow.ts' && printf 'x\\n' > ' trailing.py ' && " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
+	result := execute(cmd, {"timeout_ms": 30000})
+	parsed := parse_json(to_string(result))
+	assert(type(parsed) != "Error", "summary with unusual paths should be valid JSON")
+	assert(json_files_include(parsed, "café.md"), "non-ASCII path should be decoded exactly")
+	assert(json_files_include(parsed, "literal -> arrow.ts"), "literal arrow path should not be treated as a rename")
+	assert(json_files_include(parsed, " trailing.py "), "leading and trailing path whitespace should be preserved")
+}
+
+# Regression 3: repositories without an origin use the worktree root name.
+func test_repo_name_fallback_uses_repo_root() {
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "tmp=$(mktemp -d /tmp/patchbrief-root.XXXXXX); git -C \"$tmp\" init -q; mkdir \"$tmp/nested\"; cd \"$tmp/nested\" && " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
+	parsed := parse_json(to_string(execute(cmd, {"timeout_ms": 30000})))
+	assert(type(parsed) != "Error", "nested-directory summary should be valid JSON")
+	assert(text_contains(parsed["repo"], "patchbrief-root."), "repo fallback should name the worktree root")
+	assert(parsed["repo"] != "nested", "repo fallback should not name the caller subdirectory")
+}
+
+# Regression 4: only the terminal transport suffix is removed from remote names.
+func test_repo_name_preserves_embedded_dot_git() {
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "tmp=$(mktemp -d); cd \"$tmp\" && git init -q && git remote add origin git@example.com:org/my.git.repo.git && " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
+	parsed := parse_json(to_string(execute(cmd, {"timeout_ms": 30000})))
+	assert(parsed["repo"] == "my.git.repo", "repo name should preserve embedded .git text")
+}
+
+# Regression 5: an unborn repository still has a symbolic branch name.
+func test_current_branch_handles_unborn_head() {
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "tmp=$(mktemp -d); git -C \"$tmp\" init -q -b unborn-test; cd \"$tmp\" && " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>&1"
+	parsed := parse_json(to_string(execute(cmd, {"timeout_ms": 30000})))
+	assert(parsed["branch"] == "unborn-test", "unborn repository should report its symbolic branch")
+}
+
+# Regression 6: Terraform exists in LANG_MAP and must be reachable.
+func test_terraform_language_is_detected() {
+	from src.summarize import lang_for_file
+	assert(lang_for_file("infra/main.tf") == "Terraform", "Terraform files should not be reported as Unknown")
+}
+
+# Regression 7: suffixed Dockerfiles should use Docker analysis in both reports.
+func test_suffixed_dockerfile_is_detected() {
+	from src.summarize import lang_for_file
+	from src.suggest_tests import suggestions_for_files
+	assert(lang_for_file("containers/ci.dockerfile") == "Docker", "suffixed Dockerfile should use Docker language")
+	suggestions := suggestions_for_files(["containers/ci.dockerfile"])
+	assert(list_contains_text(suggestions, "docker build --check ."), "suffixed Dockerfile should suggest Docker validation")
+}
+
+# Regression 8: TODO-family checks compare against the normalized diff case.
+func test_added_todo_is_reported_as_risk() {
+	from src.summarize import identify_risks
+	risks := identify_risks([], "diff --git a/app.kujo b/app.kujo\n--- a/app.kujo\n+++ b/app.kujo\n@@ -1 +1,2 @@\n base\n+TODO: finish this")
+	assert(list_contains_text(risks, "Unresolved TODO/FIXME/HACK"), "new TODO should be reported as a risk")
+}
+
+# Regression 9: deleting a dangerous call should not report it as introduced.
+func test_removed_dangerous_call_is_not_reported_as_risk() {
+	from src.summarize import identify_risks
+	risks := identify_risks([], "diff --git a/app.py b/app.py\n--- a/app.py\n+++ b/app.py\n@@ -1 +1 @@\n-eval(input)\n+safe()")
+	assert(list_contains_text(risks, "Dangerous function calls") == false, "removed dangerous call should not trigger a security warning")
+}
+
+# Regression 10: backup names containing .md are not Markdown documents.
+func test_markdown_backup_does_not_get_preview_check() {
+	from src.suggest_tests import manual_checks_for_file
+	checks := manual_checks_for_file("notes.md.bak")
+	assert(len(checks) == 0, "non-Markdown backup should not get a Markdown preview check")
+}
+
 # Test 17: summarize json error response is valid JSON outside a git repo
 func test_summarize_json_error_shape_outside_repo() {
 	from src.common import shell_quote
@@ -299,6 +411,16 @@ test_handoff_json()
 test_handoff_json_pretty()
 test_invalid_summarize_format_errors()
 test_missing_summarize_format_value_errors()
+test_equals_style_format_is_honored()
+test_changed_files_preserve_unusual_paths()
+test_repo_name_fallback_uses_repo_root()
+test_repo_name_preserves_embedded_dot_git()
+test_current_branch_handles_unborn_head()
+test_terraform_language_is_detected()
+test_suffixed_dockerfile_is_detected()
+test_added_todo_is_reported_as_risk()
+test_removed_dangerous_call_is_not_reported_as_risk()
+test_markdown_backup_does_not_get_preview_check()
 test_summarize_json_error_shape_outside_repo()
 test_leading_flag_prints_guidance()
 test_str_starts_with()
