@@ -134,11 +134,15 @@ export func diff_stat() {
 
 # Get the list of changed files.
 export func changed_files() {
+	return changed_files_result()["files"]
+}
+
+export func changed_files_result() {
 	try {
 		output := execute("git status --porcelain=v1 -z --untracked-files=all 2>/dev/null", {"timeout_ms": 10000})
 		text := to_string(output)
 		if text == "" {
-			return []
+			return {"ok": true, "files": []}
 		}
 		files := []
 		nul := parse_json("\"\\u0000\"")
@@ -158,9 +162,9 @@ export func changed_files() {
 			}
 			idx := idx + 1
 		}
-		return files
+		return {"ok": true, "files": files}
 	} except err {
-		return []
+		return {"ok": false, "files": []}
 	}
 }
 

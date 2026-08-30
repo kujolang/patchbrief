@@ -420,6 +420,19 @@ func test_large_diff_reports_truncation() {
 	assert(analysis["bytes_analyzed"] == 1024, "large diff should enforce the analysis byte limit")
 }
 
+# Regression 13: git status failures must not be reported as a clean tree.
+func test_working_tree_inspection_failure_is_actionable() {
+	from src.common import shell_quote
+	script_path := path_absolute("patchbrief.kujo")
+	cmd := "tmp=$(mktemp -d); cd \"$tmp\" && git init -q && GIT_INDEX_FILE=/dev/null " + shell_quote(KUJO_BIN) + " run " + shell_quote(script_path) + " -- summarize --format json 2>/dev/null"
+	result := execute_status(cmd, {"timeout_ms": 20000})
+	assert(result.exitcode == 1, "working-tree inspection failure should exit 1")
+	parsed := parse_json(trim(to_string(result.stdout)))
+	assert(type(parsed) != "Error", "working-tree inspection failure should emit valid JSON")
+	assert(parsed["error"] == true, "working-tree inspection failure should set the error flag")
+	assert(parsed["message"] == "Failed to inspect git working tree.", "working-tree inspection failure should be actionable")
+}
+
 test_help_prints_usage()
 test_help_exact_output()
 test_version_prints_version()
@@ -458,3 +471,4 @@ test_str_starts_with()
 test_str_join()
 test_markdown_rendering_sanitizes_untrusted_text()
 test_large_diff_reports_truncation()
+test_working_tree_inspection_failure_is_actionable()

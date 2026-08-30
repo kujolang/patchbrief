@@ -1,6 +1,6 @@
 # Summarize module — analyzes git diff and generates structured summaries.
 
-from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff_analysis, recent_commits
+from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files_result, full_diff_analysis, recent_commits
 from src.common import str_trim, str_contains, str_lower, str_join, str_starts_with, str_ends_with, markdown_text, markdown_code, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
 
 # Language/extension to type mapping for summary descriptions.
@@ -176,7 +176,12 @@ export func summarize_markdown() {
 	branch := current_branch()
 	repo := repo_name()
 	stat := diff_stat()
-	files := changed_files()
+	files_result := changed_files_result()
+	if files_result["ok"] == false {
+		print_lines(["Error: Failed to inspect git working tree."])
+		exit(1)
+	}
+	files := files_result["files"]
 	diff_analysis := full_diff_analysis()
 	diff_text := diff_analysis["text"]
 	if len(files) == 0 && stat["files"] == 0 {
@@ -249,7 +254,13 @@ export func summarize_json(pretty_json) {
 	branch := current_branch()
 	repo := repo_name()
 	stat := diff_stat()
-	files := changed_files()
+	files_result := changed_files_result()
+	if files_result["ok"] == false {
+		error_obj := {"error": true, "message": "Failed to inspect git working tree."}
+		if pretty_json == true { print(to_json_pretty(error_obj)) } else { print(to_json(error_obj)) }
+		exit(1)
+	}
+	files := files_result["files"]
 	diff_analysis := full_diff_analysis()
 	diff_text := diff_analysis["text"]
 	purpose := infer_purpose(files, diff_text)

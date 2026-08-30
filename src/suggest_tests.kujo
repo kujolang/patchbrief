@@ -1,6 +1,6 @@
 # Suggest tests module — analyzes changed files and suggests test commands.
 
-from src.git import is_git_repo, changed_files
+from src.git import is_git_repo, changed_files_result
 from src.common import str_contains, str_lower, str_ends_with, dict_has_key, markdown_code, print_lines, print_prefixed_lines, print_wrapped_lines, print_markdown_section, print_not_git_repo_error
 
 # File pattern to test suggestion mapping.
@@ -98,7 +98,12 @@ export func suggest_tests() {
 		print_not_git_repo_error()
 		exit(1)
 	}
-	files := changed_files()
+	files_result := changed_files_result()
+	if files_result["ok"] == false {
+		print_lines(["Error: Failed to inspect git working tree."])
+		exit(1)
+	}
+	files := files_result["files"]
 	if len(files) == 0 {
 		print_lines([
 			"# PatchBrief Test Suggestions",
