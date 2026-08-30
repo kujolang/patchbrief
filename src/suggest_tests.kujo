@@ -1,7 +1,7 @@
 # Suggest tests module — analyzes changed files and suggests test commands.
 
 from src.git import is_git_repo, changed_files
-from src.common import str_contains, str_lower, str_ends_with, dict_has_key, print_lines, print_prefixed_lines, print_wrapped_lines, print_markdown_section, print_not_git_repo_error
+from src.common import str_contains, str_lower, str_ends_with, dict_has_key, markdown_code, print_lines, print_prefixed_lines, print_wrapped_lines, print_markdown_section, print_not_git_repo_error
 
 # File pattern to test suggestion mapping.
 TEST_SUGGESTIONS := {
@@ -81,13 +81,13 @@ export func manual_checks_for_file(file_path) {
 	lower_file := str_lower(file_name)
 	checks := []
 	if str_contains(lower_file, "readme") || str_ends_with(lower_file, ".md") {
-		checks := push(checks, "Preview Markdown rendering for `" + file_name + "`")
+		checks := push(checks, "Preview Markdown rendering for " + markdown_code(file_name))
 	}
 	if str_contains(lower_file, "config") || str_contains(lower_file, ".env") {
-		checks := push(checks, "Verify environment-specific values in `" + file_name + "`")
+		checks := push(checks, "Verify environment-specific values in " + markdown_code(file_name))
 	}
 	if str_contains(lower_file, "migration") || str_contains(lower_file, "schema") {
-		checks := push(checks, "Test migration rollback for `" + file_name + "`")
+		checks := push(checks, "Test migration rollback for " + markdown_code(file_name))
 	}
 	return checks
 }

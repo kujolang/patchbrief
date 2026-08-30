@@ -1,21 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/kujolang/patchbrief/schemas/summary-0.1.json",
-  "title": "PatchBrief summary JSON",
+  "$id": "https://github.com/kujolang/patchbrief/schemas/handoff-1.0.json",
+  "title": "PatchBrief handoff JSON",
   "type": "object",
-  "required": ["tool", "version", "repo", "branch", "summary", "analysis", "files", "risk_areas", "likely_purpose", "recent_commits"],
+  "required": ["format", "version", "generated_at", "repo", "branch", "summary", "analysis", "files", "risk_areas", "recent_commits", "reviewer_checklist"],
   "properties": {
-    "tool": {"const": "patchbrief"},
+    "format": {"const": "patchbrief-handoff"},
     "version": {"type": "string"},
+    "generated_at": {"type": "string"},
     "repo": {"type": "string"},
     "branch": {"type": "string"},
     "summary": {
       "type": "object",
-      "required": ["files_changed", "lines_added", "lines_removed"],
+      "required": ["files_changed", "lines_added", "lines_removed", "likely_purpose"],
       "properties": {
         "files_changed": {"type": "integer", "minimum": 0},
         "lines_added": {"type": "integer", "minimum": 0},
-        "lines_removed": {"type": "integer", "minimum": 0}
+        "lines_removed": {"type": "integer", "minimum": 0},
+        "likely_purpose": {"type": "string"}
       }
     },
     "analysis": {
@@ -28,19 +30,9 @@
         "diff_truncated": {"type": "boolean"}
       }
     },
-    "files": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["path", "language"],
-        "properties": {
-          "path": {"type": "string"},
-          "language": {"type": "string"}
-        }
-      }
-    },
+    "files": {"type": "array", "items": {"type": "string"}},
     "risk_areas": {"type": "array", "items": {"type": "string"}},
-    "likely_purpose": {"type": "string"},
-    "recent_commits": {"type": "array", "items": {"type": "string"}}
+    "recent_commits": {"type": "array", "items": {"type": "string"}},
+    "reviewer_checklist": {"type": "array", "items": {"type": "string"}}
   }
 }

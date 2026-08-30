@@ -389,6 +389,37 @@ func test_str_join() {
 	assert(result == "a, b, c", "should join with separator")
 }
 
+# Regression 11: repository-controlled Markdown text must not inject structure
+# or terminal control sequences into human-readable reports.
+func test_markdown_rendering_sanitizes_untrusted_text() {
+	from src.common import markdown_code, markdown_text
+	path := "evil\n## injected`<tag>.md"
+	rendered_path := markdown_code(path)
+	assert(text_contains(rendered_path, "\n") == false, "rendered path should not contain a literal newline")
+	assert(text_contains(rendered_path, "\\u000a"), "rendered path should expose a visible newline escape")
+	assert(text_contains(rendered_path, "&lt;tag&gt;"), "rendered path should HTML-escape code tag boundaries")
+	escape_text := parse_json("\"\\u001b[31mwarning\"")
+	rendered_text := markdown_text(escape_text)
+	assert(text_contains(rendered_text, escape_text) == false, "rendered text should not contain a terminal escape byte")
+	assert(text_contains(rendered_text, "u001b"), "rendered text should expose a visible terminal escape")
+}
+
+# Regression 12: bounded diff analysis must disclose truncation to consumers.
+func test_large_diff_reports_truncation() {
+	from src.git import full_diff_analysis_with_limit
+	original_dir := path_absolute(".")
+	tmp_dir := trim(to_string(execute("mktemp -d", {"timeout_ms": 5000})))
+	setup := "git -C '" + tmp_dir + "' init -q && git -C '" + tmp_dir + "' config user.email test@example.com && git -C '" + tmp_dir + "' config user.name Test && dd if=/dev/zero bs=1024 count=8 2>/dev/null | tr '\\0' a > '" + tmp_dir + "/large.txt' && git -C '" + tmp_dir + "' add large.txt && git -C '" + tmp_dir + "' commit -m init -q && dd if=/dev/zero bs=1024 count=8 2>/dev/null | tr '\\0' b > '" + tmp_dir + "/large.txt'"
+	_ := execute(setup, {"timeout_ms": 10000})
+	os_chdir(tmp_dir)
+	analysis := full_diff_analysis_with_limit(1024)
+	os_chdir(original_dir)
+	assert(analysis["error"] == false, "bounded diff analysis should succeed")
+	assert(analysis["truncated"] == true, "large diff should disclose truncation")
+	assert(analysis["max_bytes"] == 1024, "large diff should expose the analysis byte limit")
+	assert(analysis["bytes_analyzed"] == 1024, "large diff should enforce the analysis byte limit")
+}
+
 test_help_prints_usage()
 test_help_exact_output()
 test_version_prints_version()
@@ -425,3 +456,5 @@ test_summarize_json_error_shape_outside_repo()
 test_leading_flag_prints_guidance()
 test_str_starts_with()
 test_str_join()
+test_markdown_rendering_sanitizes_untrusted_text()
+test_large_diff_reports_truncation()

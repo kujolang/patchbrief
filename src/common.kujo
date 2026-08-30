@@ -1,6 +1,10 @@
 # PatchBrief shared utilities.
 # Provides helpers for CLI arg parsing, string formatting, and common operations.
 
+TERMINAL_CONTROLS := parse_json("[\"\\u0007\",\"\\u0008\",\"\\u0009\",\"\\u000a\",\"\\u000b\",\"\\u000c\",\"\\u000d\",\"\\u000e\",\"\\u000f\",\"\\u001b\",\"\\u007f\"]")
+TERMINAL_ESCAPES := ["\\u0007", "\\u0008", "\\u0009", "\\u000a", "\\u000b", "\\u000c", "\\u000d", "\\u000e", "\\u000f", "\\u001b", "\\u007f"]
+MARKDOWN_ESCAPES := ["`", "[", "]", "<", ">", "(", ")", "!"]
+
 export func is_trueish(value) {
 	return value == true || value == 1
 }
@@ -158,6 +162,38 @@ export func print_fenced(text) {
 
 export func print_not_git_repo_error() {
 	print_lines(["Error: Not a git repository. Run patchbrief inside a git repo."])
+}
+
+# Render repository-controlled text safely in Markdown and terminals.
+# JSON output intentionally keeps the original values and relies on JSON escaping.
+export func sanitize_terminal_text(value) {
+	text := to_string(value)
+	idx := 0
+	while idx < len(TERMINAL_CONTROLS) {
+		text = replace(text, to_string(TERMINAL_CONTROLS[idx]), to_string(TERMINAL_ESCAPES[idx]))
+		idx := idx + 1
+	}
+	return text
+}
+
+export func markdown_text(value) {
+	text := sanitize_terminal_text(value)
+	text = replace(text, "\\", "\\\\")
+	idx := 0
+	while idx < len(MARKDOWN_ESCAPES) {
+		char := to_string(MARKDOWN_ESCAPES[idx])
+		text = replace(text, char, "\\" + char)
+		idx := idx + 1
+	}
+	return text
+}
+
+export func markdown_code(value) {
+	text := sanitize_terminal_text(value)
+	text = replace(text, "&", "&amp;")
+	text = replace(text, "<", "&lt;")
+	text = replace(text, ">", "&gt;")
+	return "<code>" + text + "</code>"
 }
 
 # Get the current timestamp as an ISO-like string.

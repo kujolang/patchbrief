@@ -1,7 +1,7 @@
 # Handoff module — generates structured handoff notes for reviewers or downstream agents.
 
-from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
-from src.common import timestamp_now, str_join, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_wrapped_lines, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
+from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff_analysis, recent_commits
+from src.common import timestamp_now, str_join, markdown_text, markdown_code, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
 from src.summarize import infer_purpose, identify_risks
 
 REVIEWER_CHECKLIST := [
@@ -26,26 +26,44 @@ export func handoff_markdown() {
 	repo := repo_name()
 	stat := diff_stat()
 	files := changed_files()
-	diff_text := full_diff()
+	diff_analysis := full_diff_analysis()
+	diff_text := diff_analysis["text"]
 	purpose := infer_purpose(files, diff_text)
 	risks := identify_risks(files, diff_text)
+	if diff_analysis["error"] == true {
+		risks := push(risks, "Diff content analysis failed — purpose and content-based risk hints may be incomplete")
+	} else if diff_analysis["truncated"] == true {
+		risks := push(risks, "Diff analysis was truncated at " + to_string(diff_analysis["max_bytes"]) + " bytes — purpose and content-based risk hints may be incomplete")
+	}
 	commits := recent_commits(5)
 	ts := timestamp_now()
 	print_lines([
-		"# Handoff Note: " + repo + " — " + branch,
+		"# Handoff Note: " + markdown_text(repo) + " — " + markdown_text(branch),
 		"",
 		"**Date:** " + ts,
-		"**Branch:** " + branch,
+		"**Branch:** " + markdown_text(branch),
 		"**Changed Files:** " + to_string(len(files)) + " (+" + to_string(stat["added"]) + "/-" + to_string(stat["removed"]) + ")"
 	])
 	print_markdown_section("Summary")
 	print_markdown_paragraph(purpose)
 	print_markdown_section("What Changed")
-	print_wrapped_lines(files, "- `", "`")
+	file_lines := []
+	fi := 0
+	while fi < len(files) {
+		file_lines := push(file_lines, "- " + markdown_code(files[fi]))
+		fi := fi + 1
+	}
+	print_lines(file_lines)
 	print_markdown_section("Risk Assessment")
 	print_prefixed_lines(risks, "- ")
 	print_markdown_section("Recent Commits")
-	print_prefixed_or_fallback(commits, "- ", "No recent commits found.")
+	safe_commits := []
+	ci := 0
+	while ci < len(commits) {
+		safe_commits := push(safe_commits, markdown_text(commits[ci]))
+		ci := ci + 1
+	}
+	print_prefixed_or_fallback(safe_commits, "- ", "No recent commits found.")
 	print_markdown_section("Reviewer Notes")
 	print_prefixed_lines(REVIEWER_CHECKLIST, "- [ ] ")
 	print_markdown_section("For the Next Agent/Developer")
@@ -71,9 +89,15 @@ export func handoff_json(pretty_json) {
 	repo := repo_name()
 	stat := diff_stat()
 	files := changed_files()
-	diff_text := full_diff()
+	diff_analysis := full_diff_analysis()
+	diff_text := diff_analysis["text"]
 	purpose := infer_purpose(files, diff_text)
 	risks := identify_risks(files, diff_text)
+	if diff_analysis["error"] == true {
+		risks := push(risks, "Diff content analysis failed — purpose and content-based risk hints may be incomplete")
+	} else if diff_analysis["truncated"] == true {
+		risks := push(risks, "Diff analysis was truncated at " + to_string(diff_analysis["max_bytes"]) + " bytes — purpose and content-based risk hints may be incomplete")
+	}
 	commits := recent_commits(5)
 	ts := timestamp_now()
 	# Build file array
@@ -94,6 +118,12 @@ export func handoff_json(pretty_json) {
 			"lines_added": stat["added"],
 			"lines_removed": stat["removed"],
 			"likely_purpose": purpose
+		},
+		"analysis": {
+			"diff_bytes_analyzed": diff_analysis["bytes_analyzed"],
+			"diff_error": diff_analysis["error"],
+			"diff_max_bytes": diff_analysis["max_bytes"],
+			"diff_truncated": diff_analysis["truncated"]
 		},
 		"files": file_list,
 		"risk_areas": risks,

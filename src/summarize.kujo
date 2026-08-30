@@ -1,7 +1,7 @@
 # Summarize module — analyzes git diff and generates structured summaries.
 
-from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff, recent_commits
-from src.common import str_trim, str_contains, str_lower, str_join, str_starts_with, str_ends_with, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
+from src.git import is_git_repo, current_branch, repo_name, diff_stat, changed_files, full_diff_analysis, recent_commits
+from src.common import str_trim, str_contains, str_lower, str_join, str_starts_with, str_ends_with, markdown_text, markdown_code, print_lines, print_prefixed_lines, print_prefixed_or_fallback, print_markdown_section, print_markdown_paragraph, print_fenced, print_not_git_repo_error
 
 # Language/extension to type mapping for summary descriptions.
 LANG_MAP := {
@@ -61,7 +61,7 @@ func file_detail_lines(files_list) {
 	while fi_idx < len(files_list) {
 		f := to_string(files_list[fi_idx])
 		lang := lang_for_file(f)
-		lines := push(lines, "- `" + f + "` (" + lang + ")")
+		lines := push(lines, "- " + markdown_code(f) + " (" + lang + ")")
 		fi_idx := fi_idx + 1
 	}
 	return lines
@@ -177,13 +177,14 @@ export func summarize_markdown() {
 	repo := repo_name()
 	stat := diff_stat()
 	files := changed_files()
-	diff_text := full_diff()
+	diff_analysis := full_diff_analysis()
+	diff_text := diff_analysis["text"]
 	if len(files) == 0 && stat["files"] == 0 {
 		print_lines([
 			"# PatchBrief Summary",
 			"",
-			"**Repo:** " + repo,
-			"**Branch:** " + branch,
+			"**Repo:** " + markdown_text(repo),
+			"**Branch:** " + markdown_text(branch),
 			"",
 			"No uncommitted changes detected."
 		])
@@ -191,11 +192,16 @@ export func summarize_markdown() {
 	}
 	purpose := infer_purpose(files, diff_text)
 	risks := identify_risks(files, diff_text)
+	if diff_analysis["error"] == true {
+		risks := push_unique_text(risks, "Diff content analysis failed — purpose and content-based risk hints may be incomplete")
+	} else if diff_analysis["truncated"] == true {
+		risks := push_unique_text(risks, "Diff analysis was truncated at " + to_string(diff_analysis["max_bytes"]) + " bytes — purpose and content-based risk hints may be incomplete")
+	}
 	print_lines([
 		"# PatchBrief Summary",
 		"",
-		"**Repo:** " + repo,
-		"**Branch:** " + branch,
+		"**Repo:** " + markdown_text(repo),
+		"**Branch:** " + markdown_text(branch),
 		"**Changed Files:** " + to_string(len(files)),
 		"**Lines Added:** +" + to_string(stat["added"]),
 		"**Lines Removed:** -" + to_string(stat["removed"])
@@ -214,7 +220,13 @@ export func summarize_markdown() {
 	print_markdown_section("Risk Areas")
 	print_prefixed_lines(risks, "- ")
 	print_markdown_section("Recent Commits")
-	commits := recent_commits(5)
+	commits_raw := recent_commits(5)
+	commits := []
+	ci := 0
+	while ci < len(commits_raw) {
+		commits := push(commits, markdown_text(commits_raw[ci]))
+		ci := ci + 1
+	}
 	print_prefixed_or_fallback(commits, "- ", "No recent commits found.")
 	print_lines([
 		"",
@@ -238,9 +250,15 @@ export func summarize_json(pretty_json) {
 	repo := repo_name()
 	stat := diff_stat()
 	files := changed_files()
-	diff_text := full_diff()
+	diff_analysis := full_diff_analysis()
+	diff_text := diff_analysis["text"]
 	purpose := infer_purpose(files, diff_text)
 	risks := identify_risks(files, diff_text)
+	if diff_analysis["error"] == true {
+		risks := push_unique_text(risks, "Diff content analysis failed — purpose and content-based risk hints may be incomplete")
+	} else if diff_analysis["truncated"] == true {
+		risks := push_unique_text(risks, "Diff analysis was truncated at " + to_string(diff_analysis["max_bytes"]) + " bytes — purpose and content-based risk hints may be incomplete")
+	}
 	commits := recent_commits(5)
 	# Build file details array
 	file_details := []
@@ -264,6 +282,12 @@ export func summarize_json(pretty_json) {
 			"files_changed": len(files),
 			"lines_added": stat["added"],
 			"lines_removed": stat["removed"]
+		},
+		"analysis": {
+			"diff_bytes_analyzed": diff_analysis["bytes_analyzed"],
+			"diff_error": diff_analysis["error"],
+			"diff_max_bytes": diff_analysis["max_bytes"],
+			"diff_truncated": diff_analysis["truncated"]
 		},
 		"likely_purpose": purpose,
 		"files": file_details,

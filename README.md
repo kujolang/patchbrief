@@ -27,7 +27,7 @@ Note: use `--` before PatchBrief arguments so Kujo does not parse tool flags as 
 PatchBrief treats `help` and `version` as commands; `--help` and `--version`
 are not standalone aliases and will fall back to the command-order guidance.
 
-PatchBrief reports staged, unstaged, and untracked files. Line counts come from Git's tracked diff stat, while untracked files are still listed and counted as changed files so a review handoff does not accidentally look clean.
+PatchBrief reports staged, unstaged, and untracked files. Line counts come from Git's tracked diff stat, while untracked files are still listed and counted as changed files so a review handoff does not accidentally look clean. Content-based heuristics inspect a bounded 1 MiB tracked diff and disclose truncation in Markdown risk notes and JSON `analysis` metadata.
 
 Common follow-up commands:
 
@@ -105,10 +105,11 @@ docs/                   # Maintainer review notes and hardening backlogs
 
 ## Status
 
-PatchBrief 1.0 is stable for local rule-based review briefs, with passing contract tests and intentionally small scope. It is not a hosted review service or an enterprise policy engine; additional hardening opportunities remain tracked in `docs/patchbrief-hardening-backlog-2026-06-19.md`.
+PatchBrief 1.0 is stable for local rule-based review briefs, with passing contract tests and intentionally small scope. It is not a hosted review service or an enterprise policy engine.
 
-The current `summarize --format json` shape is documented by
-[schemas/patchbrief-summary.schema.json](schemas/patchbrief-summary.schema.json).
+The current JSON shapes are documented by
+[schemas/patchbrief-summary.schema.json](schemas/patchbrief-summary.schema.json)
+and [schemas/patchbrief-handoff.schema.json](schemas/patchbrief-handoff.schema.json).
 This is the compatibility baseline for the `1.x` line; consumers
 should ignore unknown future fields. See [docs/security.md](docs/security.md)
 for local-data and heuristic-analysis boundaries.
