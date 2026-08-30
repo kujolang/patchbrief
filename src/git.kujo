@@ -187,20 +187,19 @@ export func full_diff_analysis_with_limit(max_bytes) {
 		limit = 16777216
 	}
 	try {
-		capture_bytes := limit + 1
-		cmd := "git diff --no-ext-diff HEAD 2>/dev/null | head -c " + to_string(capture_bytes)
-		output := execute(cmd, {"timeout_ms": 30000, "max_output_bytes": capture_bytes + 1})
-		text := to_string(output)
-		truncated := len(text) > limit
-		if truncated {
-			text = substring(text, 0, limit)
+		result := spawn_process(["git", "diff", "--no-ext-diff", "HEAD"], {"timeout_ms": 30000, "max_output_bytes": limit})
+		if result.success == false && result.timed_out == false {
+			# An unborn repository has no HEAD; compare its index with the empty tree.
+			result = spawn_process(["git", "diff", "--no-ext-diff", "--cached"], {"timeout_ms": 30000, "max_output_bytes": limit})
 		}
+		text := to_string(result.stdout)
+		failed := result.success == false || result.timed_out == true
 		return {
 			"text": text,
 			"bytes_analyzed": len(text),
 			"max_bytes": limit,
-			"truncated": truncated,
-			"error": false
+			"truncated": result.stdout_truncated,
+			"error": failed
 		}
 	} except err {
 		return {"text": "", "bytes_analyzed": 0, "max_bytes": limit, "truncated": false, "error": true}
