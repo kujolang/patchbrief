@@ -7,7 +7,7 @@
 - Starting SHA: `1e9ada307f16138dc705a32619cda11a0206d9c2`
 - Ending audited implementation SHA: `ff0ff7af2ebd13feff2bb6eb8af70150bc2f1783`
 - Purpose: local, rule-based inspection of Git working-tree changes with Markdown and JSON summaries, test suggestions, and reviewer handoffs.
-- Important dependencies and integrations: Kujo runtime, Git, POSIX-like local execution environment, Kennel package metadata, PatchBrief JSON consumers, and the Kujo tool-artifact CI guard.
+- Important dependencies and integrations: Kujo runtime, Git, POSIX-like local execution environment, Kennel package metadata, PatchBrief JSON consumers, the contract-test workflow, and the Kujo tool-artifact CI guard.
 
 The audit receipt itself is committed after the ending audited implementation SHA above.
 
@@ -26,7 +26,7 @@ The clean-tree baseline pretty JSON sizes were 631 bytes for `summarize` and 828
 | PBH-003 | P1 | Failure semantics | `git status` failures returned an empty file list and could be reported as a clean tree. | `GIT_INDEX_FILE=/dev/null` made Git fail while PatchBrief previously had no failure-bearing status result. | Added a failure-bearing result contract, non-zero CLI behavior, JSON error payload, and regression test. | Fixed |
 | PBH-004 | P1 | API/contracts | Handoff JSON had no formal schema, and the summary schema did not validate nested field types. | Only `schemas/patchbrief-summary.schema.json` existed; its nested shapes were unconstrained. | Added the handoff schema, strengthened the summary schema, and validated live outputs with Draft 2020-12 validation. | Fixed |
 | PBH-005 | P2 | Documentation | README linked to a hardening backlog that had been deleted from the current tree. | The documented path did not exist at the starting SHA. | Removed the stale reference and documented current schemas and analysis limits. | Fixed |
-| PBH-006 | P1 | CI | CI checks committed tool artifacts but does not execute PatchBrief contract tests. | `.github/workflows/kujo-tool-artifacts-guard.yml` is the only workflow. | Deferred until the Kujo ecosystem provides a supported, pinnable CI runtime installation contract. | Cross-repository follow-up |
+| PBH-006 | P1 | CI | CI checked committed tool artifacts but did not execute PatchBrief contract tests. | `.github/workflows/kujo-tool-artifacts-guard.yml` was the only workflow at the starting SHA. | Added a contract-test workflow that verifies a checksum-pinned Kujo v1.1.0 release binary before running source checks and tests. | Fixed |
 
 ## Changes Implemented
 
@@ -83,20 +83,12 @@ Remaining security scope is intentionally heuristic: PatchBrief is not a secret 
 
 ## Cross-Repository Follow-Ups
 
-### Kujo runtime distribution for CI
-
-- Affected repository: Kujo runtime/toolchain.
-- Contract: a supported, pinnable, checksum-verifiable way for ecosystem repositories to install a released Kujo binary in GitHub Actions.
-- Evidence: PatchBrief has executable contract tests but its only workflow checks artifact hygiene.
-- Impact: regressions are locally detectable but are not automatically gated on pushes or pull requests.
-- Recommended change: publish and document an immutable runtime release/install action or equivalent checksum-pinned procedure, then add `kujo check` and `kujo test` to PatchBrief CI.
-- Current repository dependency: not required for runtime behavior, but required for a stable CI test gate.
-- Compatibility concern: CI must pin a runtime compatible with `kujo.toml` and avoid building an unpinned moving branch.
+None. Kujo v1.1.0 now publishes checksum-verifiable release binaries, so PatchBrief can enforce its contract tests without modifying the runtime repository.
 
 ## Remaining Work
 
 - **P0:** none.
-- **P1:** add automated contract-test CI after the supported Kujo runtime installation contract exists.
+- **P1:** none.
 - **P2:** consider structured per-file status and explicit no-change JSON fields only as additive, separately versioned contract work.
 - **P3:** none admitted.
 - **Needs more evidence:** configurable heuristics, base-ref mode, and broader repository-size benchmarks; these are features or product decisions, not demonstrated defects in this audit.
@@ -122,6 +114,7 @@ kujo run patchbrief.kujo -- suggest-tests
 kujo run patchbrief.kujo -- handoff --format json --pretty
 bash -n .github/scripts/check-kujo-tool-artifacts.sh
 bash .github/scripts/check-kujo-tool-artifacts.sh
+bash .github/scripts/check-version-sync.sh
 git diff --check
 python Draft 2020-12 validation of both live JSON outputs against both schemas
 hyperfine --warmup 2 --runs 10 <starting summarize JSON> <ending summarize JSON>

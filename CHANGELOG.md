@@ -4,10 +4,13 @@ All notable changes to PatchBrief are documented here.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-30
+
 - Escaped repository-controlled text in Markdown reports to prevent structure and terminal-control injection while preserving exact JSON values.
 - Added explicit bounded-diff analysis metadata and warnings when content heuristics reach the 1 MiB limit.
 - Made Git working-tree inspection failures explicit instead of reporting a false clean state.
 - Added a formal handoff JSON schema and strengthened summary schema field validation.
+- Added CI contract tests using a checksum-pinned Kujo v1.1.0 release binary.
 
 ## [1.0.0] - 2026-08-08
 

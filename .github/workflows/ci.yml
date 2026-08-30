@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  KUJO_VERSION: v1.1.0
+  KUJO_LINUX_X64_SHA256: 6cff72d35ed0b43daaf43bb50e2925e86ed72ed0e0e2433db46d2d069f44af91
+
+jobs:
+  contract-tests:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+
+      - name: Install pinned Kujo runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="kujo-${KUJO_VERSION}-linux-x64.tar.gz"
+          url="https://github.com/kujolang/kujo/releases/download/${KUJO_VERSION}/${archive}"
+          curl --proto '=https' --tlsv1.2 --fail --location --retry 3 --output "${RUNNER_TEMP}/${archive}" "${url}"
+          printf '%s  %s\n' "${KUJO_LINUX_X64_SHA256}" "${RUNNER_TEMP}/${archive}" | sha256sum --check --strict -
+          mkdir -p "${RUNNER_TEMP}/kujo-bin"
+          tar -xzf "${RUNNER_TEMP}/${archive}" -C "${RUNNER_TEMP}/kujo-bin"
+          chmod 0755 "${RUNNER_TEMP}/kujo-bin/kujo"
+          echo "${RUNNER_TEMP}/kujo-bin" >> "${GITHUB_PATH}"
+
+      - name: Verify runtime
+        run: kujo --version
+
+      - name: Verify release version sync
+        run: bash .github/scripts/check-version-sync.sh
+
+      - name: Check Kujo sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in patchbrief.kujo src/*.kujo tests/*.kujo; do
+            kujo check "${file}"
+          done
+
+      - name: Run contract tests
+        run: kujo test
