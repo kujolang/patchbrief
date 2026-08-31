@@ -1,4 +1,6 @@
 tests/*.out
+__pycache__/
+*.py[cod]
 
 .kujo-mcp/
 .dogfood/

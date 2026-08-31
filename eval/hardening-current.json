@@ -1,0 +1,17 @@
+{
+  "name": "patchbrief-hardening-current",
+  "description": "Deterministic outcome checks for the hardened PatchBrief build.",
+  "version": "1.0.0",
+  "artifact_checksums": true,
+  "stop_on_failure": false,
+  "tests": [
+    {"name": "Minimal workload succeeds", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[0].passed", "expected": true}},
+    {"name": "Typical workload is complete", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[1].passed", "expected": true}},
+    {"name": "Git failure is actionable", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[2].passed", "expected": true}},
+    {"name": "Diff truncation is disclosed", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[3].passed", "expected": true}},
+    {"name": "Markdown injection is contained", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[4].passed", "expected": true}},
+    {"name": "Agent handoff remains usable", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[5].passed", "expected": true}},
+    {"name": "Normal invocations are reliable", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[6].passed", "expected": true}},
+    {"name": "Typical output size is deterministic", "check": "json_value_equals", "params": {"path": "evidence/current.json", "json_path": "checks[7].passed", "expected": true}}
+  ]
+}
