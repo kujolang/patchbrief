@@ -1,0 +1,82 @@
+{
+  "version": "current",
+  "checks": [
+    {
+      "category": "correctness",
+      "name": "minimal JSON is valid and identifies PatchBrief",
+      "passed": true,
+      "evidence": {
+        "tool": "patchbrief"
+      }
+    },
+    {
+      "category": "correctness",
+      "name": "typical workload reports all 10 changed files",
+      "passed": true,
+      "evidence": {
+        "files_changed": 10
+      }
+    },
+    {
+      "category": "failure_behavior",
+      "name": "invalid Git index exits non-zero with actionable JSON",
+      "passed": true,
+      "evidence": {
+        "exit_code": 1,
+        "payload": {
+          "error": true,
+          "message": "Failed to inspect git working tree."
+        }
+      }
+    },
+    {
+      "category": "failure_behavior",
+      "name": "oversized diff discloses truncation",
+      "passed": true,
+      "evidence": {
+        "analysis": {
+          "diff_bytes_analyzed": 1048576,
+          "diff_error": false,
+          "diff_max_bytes": 1048576,
+          "diff_truncated": true
+        }
+      }
+    },
+    {
+      "category": "agent_usability",
+      "name": "Markdown cannot inject a second-level heading",
+      "passed": true,
+      "evidence": {
+        "contains_injected_heading": false,
+        "contains_escape": false
+      }
+    },
+    {
+      "category": "agent_usability",
+      "name": "handoff preserves required reviewer sections",
+      "passed": true,
+      "evidence": {
+        "stdout_bytes": 991
+      }
+    },
+    {
+      "category": "reliability",
+      "name": "all measured normal workload invocations succeeded",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "category": "determinism",
+      "name": "typical output size is stable across repetitions",
+      "passed": true,
+      "evidence": {
+        "distinct_sizes": [
+          934
+        ]
+      }
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "total": 8
+}

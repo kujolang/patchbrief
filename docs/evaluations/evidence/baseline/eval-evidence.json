@@ -1,0 +1,92 @@
+{
+  "version": "baseline",
+  "checks": [
+    {
+      "category": "correctness",
+      "name": "minimal JSON is valid and identifies PatchBrief",
+      "passed": true,
+      "evidence": {
+        "tool": "patchbrief"
+      }
+    },
+    {
+      "category": "correctness",
+      "name": "typical workload reports all 10 changed files",
+      "passed": true,
+      "evidence": {
+        "files_changed": 10
+      }
+    },
+    {
+      "category": "failure_behavior",
+      "name": "invalid Git index exits non-zero with actionable JSON",
+      "passed": false,
+      "evidence": {
+        "exit_code": 0,
+        "payload": {
+          "branch": "main",
+          "files": [],
+          "likely_purpose": "No changes detected",
+          "recent_commits": [
+            "f81b98c benchmark fixture baseline"
+          ],
+          "repo": "failure",
+          "risk_areas": [
+            "No high-risk patterns detected (heuristic check only)"
+          ],
+          "summary": {
+            "files_changed": 0,
+            "lines_added": 0,
+            "lines_removed": 0
+          },
+          "tool": "patchbrief",
+          "version": "1.0.0"
+        }
+      }
+    },
+    {
+      "category": "failure_behavior",
+      "name": "oversized diff discloses truncation",
+      "passed": false,
+      "evidence": {
+        "analysis": null
+      }
+    },
+    {
+      "category": "agent_usability",
+      "name": "Markdown cannot inject a second-level heading",
+      "passed": false,
+      "evidence": {
+        "contains_injected_heading": true,
+        "contains_escape": false
+      }
+    },
+    {
+      "category": "agent_usability",
+      "name": "handoff preserves required reviewer sections",
+      "passed": true,
+      "evidence": {
+        "stdout_bytes": 881
+      }
+    },
+    {
+      "category": "reliability",
+      "name": "all measured normal workload invocations succeeded",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "category": "determinism",
+      "name": "typical output size is stable across repetitions",
+      "passed": true,
+      "evidence": {
+        "distinct_sizes": [
+          827
+        ]
+      }
+    }
+  ],
+  "passed": 5,
+  "failed": 3,
+  "total": 8
+}

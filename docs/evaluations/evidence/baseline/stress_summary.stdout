@@ -1,0 +1,1 @@
+{"branch":"main","files":[{"language":"Unknown","path":"large.txt"}],"likely_purpose":"General changes","recent_commits":["329d8de benchmark fixture baseline"],"repo":"stress","risk_areas":["No high-risk patterns detected (heuristic check only)"],"summary":{"files_changed":1,"lines_added":1,"lines_removed":1},"tool":"patchbrief","version":"1.0.0"}

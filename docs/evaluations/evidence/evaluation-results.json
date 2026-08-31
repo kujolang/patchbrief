@@ -1,0 +1,2574 @@
+{
+  "agent_metrics": {
+    "active_context_tokens": {
+      "status": "measured_for_cli_output_only",
+      "tokenizer": "cl100k_base"
+    },
+    "llm_input_tokens": {
+      "reason": "PatchBrief makes no LLM calls.",
+      "status": "not_applicable"
+    },
+    "llm_output_tokens": {
+      "reason": "PatchBrief makes no LLM calls.",
+      "status": "not_applicable"
+    },
+    "model_provider_cost": {
+      "reason": "No model/provider is used.",
+      "status": "not_applicable"
+    },
+    "tool_calls": {
+      "reason": "The workload is a local CLI, not an instrumented agent session.",
+      "status": "not_demonstrated"
+    }
+  },
+  "build_and_test": {
+    "binary_size": {
+      "applicable": false,
+      "reason": "PatchBrief is interpreted Kujo source and declares no build artifact."
+    },
+    "check": {
+      "baseline": {
+        "command": "baseline-check",
+        "exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max": 0.04482796706000001,
+        "mean": 0.038865177560000005,
+        "median": 0.03873132306,
+        "memory_usage_byte": [
+          5505024,
+          5505024,
+          5505024,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696
+        ],
+        "min": 0.032448072060000006,
+        "stddev": 0.0033924748476826133,
+        "system": 0.01582326,
+        "times": [
+          0.039209686060000006,
+          0.03672599806,
+          0.03771242006,
+          0.032448072060000006,
+          0.03645499606,
+          0.04031817906,
+          0.04482796706000001,
+          0.041058243060000006,
+          0.03825296006,
+          0.04164325406
+        ],
+        "user": 0.021502559999999997
+      },
+      "current": {
+        "command": "current-check",
+        "exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max": 0.04605003106,
+        "mean": 0.04074601736,
+        "median": 0.04004725656000001,
+        "memory_usage_byte": [
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696,
+          5533696
+        ],
+        "min": 0.03708947906000001,
+        "stddev": 0.0031675791890661033,
+        "system": 0.015968859999999998,
+        "times": [
+          0.041326042060000005,
+          0.038719942060000005,
+          0.03805264606,
+          0.04278230806,
+          0.04417759406,
+          0.043142712060000005,
+          0.04605003106,
+          0.03735094806000001,
+          0.03708947906000001,
+          0.038768471060000004
+        ],
+        "user": 0.02160636
+      },
+      "median_comparison": {
+        "absolute_change": 0.001315933500000005,
+        "baseline": 0.03873132306,
+        "current": 0.04004725656000001,
+        "percent_change": 3.3975950110494493
+      }
+    },
+    "direct_dependencies": {
+      "baseline": 0,
+      "current": 0
+    },
+    "tests": {
+      "baseline": {
+        "command": "baseline-tests",
+        "exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max": 27.303805176199997,
+        "mean": 26.331184843999996,
+        "median": 26.2862338312,
+        "memory_usage_byte": [
+          16789504,
+          16986112,
+          16986112,
+          16986112,
+          16986112
+        ],
+        "min": 25.5455426252,
+        "stddev": 0.6998585757681156,
+        "system": 9.701062339999998,
+        "times": [
+          26.2862338312,
+          26.698279531199997,
+          25.822063056199998,
+          27.303805176199997,
+          25.5455426252
+        ],
+        "user": 12.4445163
+      },
+      "both_passed_all_repetitions": true,
+      "current": {
+        "command": "current-tests",
+        "exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max": 36.0042078552,
+        "mean": 33.9785588276,
+        "median": 33.3395997852,
+        "memory_usage_byte": [
+          16986112,
+          17858560,
+          17858560,
+          17858560,
+          17858560
+        ],
+        "min": 32.4053064062,
+        "stddev": 1.5522985298799505,
+        "system": 11.620497339999998,
+        "times": [
+          33.3395997852,
+          32.4053064062,
+          32.9241305202,
+          35.2195495712,
+          36.0042078552
+        ],
+        "user": 14.6704519
+      },
+      "median_comparison": {
+        "absolute_change": 7.053365954,
+        "baseline": 26.2862338312,
+        "current": 33.3395997852,
+        "percent_change": 26.83292707237553
+      }
+    },
+    "transitive_dependencies": {
+      "baseline": 0,
+      "current": 0
+    }
+  },
+  "comparison": {
+    "baseline": {
+      "sha": "1e9ada307f16138dc705a32619cda11a0206d9c2",
+      "subject": "test: cover ten PatchBrief bug fixes",
+      "tags": [],
+      "timestamp": "2026-08-11T16:03:44-04:00"
+    },
+    "baseline_reason": "Immediate parent of the first contiguous 2026-08-30 hardening commit; selects the last pre-hardening tree without including unrelated v1.0.0-to-August bug fixes.",
+    "current": {
+      "sha": "76adc15975c1c826a1ae59134cdb21905f6c3c48",
+      "subject": "release: prepare PatchBrief v1.0.1",
+      "tags": [
+        "v1.0.1"
+      ],
+      "timestamp": "2026-08-30T19:31:47-04:00"
+    }
+  },
+  "environment": {
+    "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
+    "filesystem": "APFS (SSD)",
+    "git_version": "git version 2.42.0",
+    "hostname": "MacBook-Pro",
+    "kujo_binary": "/Users/robertdevore/2026/Kujolang/kujo-repos/kujo/target/release/kujo",
+    "kujo_version": "kujo 1.1.0",
+    "logical_cores": 12,
+    "machine": "x86_64",
+    "measured_runs": 20,
+    "model_provider": null,
+    "network_used_by_patchbrief": false,
+    "os": "macOS-26.3.1-x86_64-i386-64bit",
+    "python": "3.10.5",
+    "ram_bytes": 17179869184,
+    "scaling_runs": 10,
+    "timestamp_utc": "2026-08-31T01:22:21.531135+00:00",
+    "warmups": 3
+  },
+  "generated_at": "2026-08-31T01:22:21.531135+00:00",
+  "kujo_eval": {
+    "baseline": {
+      "failed": 3,
+      "passed": 5,
+      "score_percent": 62.5,
+      "total": 8
+    },
+    "criteria": [
+      {
+        "category": "correctness",
+        "evidence": {
+          "tool": "patchbrief"
+        },
+        "name": "minimal JSON is valid and identifies PatchBrief",
+        "passed": true
+      },
+      {
+        "category": "correctness",
+        "evidence": {
+          "files_changed": 10
+        },
+        "name": "typical workload reports all 10 changed files",
+        "passed": true
+      },
+      {
+        "category": "failure_behavior",
+        "evidence": {
+          "exit_code": 1,
+          "payload": {
+            "error": true,
+            "message": "Failed to inspect git working tree."
+          }
+        },
+        "name": "invalid Git index exits non-zero with actionable JSON",
+        "passed": true
+      },
+      {
+        "category": "failure_behavior",
+        "evidence": {
+          "analysis": {
+            "diff_bytes_analyzed": 1048576,
+            "diff_error": false,
+            "diff_max_bytes": 1048576,
+            "diff_truncated": true
+          }
+        },
+        "name": "oversized diff discloses truncation",
+        "passed": true
+      },
+      {
+        "category": "agent_usability",
+        "evidence": {
+          "contains_escape": false,
+          "contains_injected_heading": false
+        },
+        "name": "Markdown cannot inject a second-level heading",
+        "passed": true
+      },
+      {
+        "category": "agent_usability",
+        "evidence": {
+          "stdout_bytes": 991
+        },
+        "name": "handoff preserves required reviewer sections",
+        "passed": true
+      },
+      {
+        "category": "reliability",
+        "evidence": {},
+        "name": "all measured normal workload invocations succeeded",
+        "passed": true
+      },
+      {
+        "category": "determinism",
+        "evidence": {
+          "distinct_sizes": [
+            934
+          ]
+        },
+        "name": "typical output size is stable across repetitions",
+        "passed": true
+      }
+    ],
+    "current": {
+      "failed": 0,
+      "passed": 8,
+      "score_percent": 100.0,
+      "total": 8
+    },
+    "delta_percentage_points": 37.5
+  },
+  "methodology": {
+    "check_measured_runs": 10,
+    "latency_percentile_method": "nearest rank",
+    "network_enabled_by_workload": false,
+    "primary_latency_statistic": "median",
+    "runtime_measured_runs": 20,
+    "runtime_warmups": 3,
+    "same_runtime_for_both_versions": true,
+    "scaling_measured_runs": 10,
+    "stress_failure_injection_measured_runs": 10,
+    "test_measured_runs": 5,
+    "tokenizer": "cl100k_base via tiktoken 0.11.0"
+  },
+  "raw_evidence": "raw-measurements.json",
+  "regressions": [
+    {
+      "absolute_change": 2263040.0,
+      "baseline": 13051904.0,
+      "current": 15314944.0,
+      "likely_cause": "Current retains and analyzes the bounded 1 MiB diff instead of converting limit exhaustion to an empty string.",
+      "metric": "stress peak RSS",
+      "percent_change": 17.33877294837596,
+      "severity": "moderate"
+    },
+    {
+      "absolute_change": 7.053365954,
+      "baseline": 26.2862338312,
+      "current": 33.3395997852,
+      "likely_cause": "Three regression scenarios and additional assertions were added.",
+      "metric": "test-suite median wall time",
+      "percent_change": 26.83292707237553,
+      "severity": "low"
+    },
+    {
+      "absolute_change": 29.0,
+      "baseline": 237.0,
+      "current": 266.0,
+      "likely_cause": "Additive analysis evidence.",
+      "metric": "routine JSON output tokens (typical)",
+      "percent_change": 12.236286919831224,
+      "severity": "low"
+    },
+    {
+      "absolute_change": 1.883987645036541,
+      "baseline": 3.839598694932647,
+      "current": 5.723586339969188,
+      "likely_cause": "The direct process path has higher overhead on this homogeneous fixture; mixed worktrees improve sharply, so the effect is workload-sensitive.",
+      "metric": "25-file homogeneous scaling median wall time",
+      "percent_change": 49.06730610995765,
+      "severity": "moderate"
+    }
+  ],
+  "scaling": {
+    "1": {
+      "baseline": {
+        "max": 1.1283120710868388,
+        "mean": 1.044364451128058,
+        "median": 1.0389764155261219,
+        "min": 0.9689915468916297,
+        "n": 10,
+        "p95": 1.1283120710868388,
+        "p99": 1.1283120710868388,
+        "stddev": 0.05264613856175466
+      },
+      "current": {
+        "max": 1.3700093559455127,
+        "mean": 1.0964926007436588,
+        "median": 1.13748862745706,
+        "min": 0.7652669849339873,
+        "n": 10,
+        "p95": 1.3700093559455127,
+        "p99": 1.3700093559455127,
+        "stddev": 0.2358302896403515
+      },
+      "median_comparison": {
+        "absolute_change": 0.09851221193093807,
+        "baseline": 1.0389764155261219,
+        "current": 1.13748862745706,
+        "percent_change": 9.481660070315742
+      }
+    },
+    "10": {
+      "baseline": {
+        "max": 2.601984034990892,
+        "mean": 2.4127755454741417,
+        "median": 2.452306416002102,
+        "min": 2.113798074889928,
+        "n": 10,
+        "p95": 2.601984034990892,
+        "p99": 2.601984034990892,
+        "stddev": 0.15444517568525412
+      },
+      "current": {
+        "max": 3.667637440143153,
+        "mean": 2.7756552684353664,
+        "median": 2.6149885795312002,
+        "min": 2.092153187142685,
+        "n": 10,
+        "p95": 3.667637440143153,
+        "p99": 3.667637440143153,
+        "stddev": 0.6145788567293919
+      },
+      "median_comparison": {
+        "absolute_change": 0.16268216352909803,
+        "baseline": 2.452306416002102,
+        "current": 2.6149885795312002,
+        "percent_change": 6.633843245181094
+      }
+    },
+    "25": {
+      "baseline": {
+        "max": 4.522462205030024,
+        "mean": 3.951427520159632,
+        "median": 3.839598694932647,
+        "min": 3.5910291890613735,
+        "n": 10,
+        "p95": 4.522462205030024,
+        "p99": 4.522462205030024,
+        "stddev": 0.29757901366112116
+      },
+      "current": {
+        "max": 7.507795555051416,
+        "mean": 5.884959209244698,
+        "median": 5.723586339969188,
+        "min": 5.2092944260220975,
+        "n": 10,
+        "p95": 7.507795555051416,
+        "p99": 7.507795555051416,
+        "stddev": 0.7070960950047285
+      },
+      "median_comparison": {
+        "absolute_change": 1.883987645036541,
+        "baseline": 3.839598694932647,
+        "current": 5.723586339969188,
+        "percent_change": 49.06730610995765
+      }
+    },
+    "5": {
+      "baseline": {
+        "max": 2.238806947832927,
+        "mean": 1.6280215757666157,
+        "median": 1.593925196910277,
+        "min": 1.3765010009519756,
+        "n": 10,
+        "p95": 2.238806947832927,
+        "p99": 2.238806947832927,
+        "stddev": 0.24901934470388107
+      },
+      "current": {
+        "max": 2.367314822971821,
+        "mean": 1.9656660794047638,
+        "median": 1.9481970019405708,
+        "min": 1.4766308451071382,
+        "n": 10,
+        "p95": 2.367314822971821,
+        "p99": 2.367314822971821,
+        "stddev": 0.25468008912039053
+      },
+      "median_comparison": {
+        "absolute_change": 0.35427180503029376,
+        "baseline": 1.593925196910277,
+        "current": 1.9481970019405708,
+        "percent_change": 22.226375849822013
+      }
+    },
+    "50": {
+      "baseline": {
+        "max": 14.210597563069314,
+        "mean": 10.64039460781496,
+        "median": 10.274384711519815,
+        "min": 8.030647853156552,
+        "n": 10,
+        "p95": 14.210597563069314,
+        "p99": 14.210597563069314,
+        "stddev": 1.9504447319352636
+      },
+      "current": {
+        "max": 20.96845121588558,
+        "mean": 13.981008565612138,
+        "median": 11.021676837932318,
+        "min": 10.139745999127626,
+        "n": 10,
+        "p95": 20.96845121588558,
+        "p99": 20.96845121588558,
+        "stddev": 4.579129363134639
+      },
+      "median_comparison": {
+        "absolute_change": 0.7472921264125034,
+        "baseline": 10.274384711519815,
+        "current": 11.021676837932318,
+        "percent_change": 7.273351615641049
+      }
+    }
+  },
+  "schema_version": "1.0.0",
+  "source_metrics": {
+    "baseline": {
+      "blank_loc": 103,
+      "branch_tokens": 128,
+      "comment_loc": 97,
+      "functions": 88,
+      "kujo_files": 7,
+      "largest_kujo_files": [
+        {
+          "lines": 427,
+          "path": "tests/patchbrief_tests.kujo"
+        },
+        {
+          "lines": 274,
+          "path": "src/summarize.kujo"
+        },
+        {
+          "lines": 216,
+          "path": "src/git.kujo"
+        },
+        {
+          "lines": 176,
+          "path": "src/common.kujo"
+        },
+        {
+          "lines": 153,
+          "path": "patchbrief.kujo"
+        }
+      ],
+      "production_kujo_files": 6,
+      "source_loc": 938,
+      "test_kujo_files": 1,
+      "test_loc": 344,
+      "todo_fixme": 9,
+      "tracked_bytes": 75835,
+      "tracked_files": 20,
+      "unwrap_expect": 0
+    },
+    "current": {
+      "blank_loc": 114,
+      "branch_tokens": 153,
+      "comment_loc": 105,
+      "functions": 97,
+      "kujo_files": 7,
+      "largest_kujo_files": [
+        {
+          "lines": 474,
+          "path": "tests/patchbrief_tests.kujo"
+        },
+        {
+          "lines": 309,
+          "path": "src/summarize.kujo"
+        },
+        {
+          "lines": 250,
+          "path": "src/git.kujo"
+        },
+        {
+          "lines": 212,
+          "path": "src/common.kujo"
+        },
+        {
+          "lines": 153,
+          "path": "patchbrief.kujo"
+        }
+      ],
+      "production_kujo_files": 6,
+      "source_loc": 1077,
+      "test_kujo_files": 1,
+      "test_loc": 384,
+      "todo_fixme": 9,
+      "tracked_bytes": 101665,
+      "tracked_files": 24,
+      "unwrap_expect": 0
+    }
+  },
+  "verdict": {
+    "answer": "YES",
+    "reason": "Current passes all 8 deterministic Eval criteria versus 5/8, fixes three false-success/injection/truncation behaviors, and materially reduces latency on representative mixed and large workloads. The conclusion remains qualified by higher bounded-output/context volume, stress memory, test time, and slower homogeneous scaling fixtures."
+  },
+  "workloads": {
+    "agent_handoff": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 79.5602947409636,
+          "mean": 64.53371635973204,
+          "median": 63.15307510354117,
+          "min": 44.98341195928015,
+          "n": 20,
+          "p95": 75.93557151442222,
+          "p99": 79.5602947409636,
+          "stddev": 9.131281964247314
+        },
+        "current": {
+          "max": 88.73202131284526,
+          "mean": 78.9489522264549,
+          "median": 79.46628359338231,
+          "min": 66.54532013730639,
+          "n": 20,
+          "p95": 88.2466536607015,
+          "p99": 88.73202131284526,
+          "stddev": 7.176439828744197
+        },
+        "median_comparison": {
+          "absolute_change": 16.313208489841145,
+          "baseline": 63.15307510354117,
+          "current": 79.46628359338231,
+          "percent_change": 25.831217978056014
+        },
+        "p95_comparison": {
+          "absolute_change": 12.311082146279276,
+          "baseline": 75.93557151442222,
+          "current": 88.2466536607015,
+          "percent_change": 16.212536365701897
+        }
+      },
+      "current_exit_codes": [
+        0
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 13381632.0,
+          "mean": 13017907.2,
+          "median": 13010944.0,
+          "min": 12652544.0,
+          "n": 20,
+          "p95": 13283328.0,
+          "p99": 13381632.0,
+          "stddev": 223501.7063138916
+        },
+        "current": {
+          "max": 13279232.0,
+          "mean": 13058457.6,
+          "median": 13111296.0,
+          "min": 12816384.0,
+          "n": 20,
+          "p95": 13197312.0,
+          "p99": 13279232.0,
+          "stddev": 131636.00758007306
+        },
+        "median_comparison": {
+          "absolute_change": 100352.0,
+          "baseline": 13010944.0,
+          "current": 13111296.0,
+          "percent_change": 0.7712891547300488
+        },
+        "p95_comparison": {
+          "absolute_change": -86016.0,
+          "baseline": 13283328.0,
+          "current": 13197312.0,
+          "percent_change": -0.6475485661424607
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 881.0,
+          "mean": 881.0,
+          "median": 881.0,
+          "min": 881.0,
+          "n": 20,
+          "p95": 881.0,
+          "p99": 881.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 991.0,
+          "mean": 991.0,
+          "median": 991.0,
+          "min": 991.0,
+          "n": 20,
+          "p95": 991.0,
+          "p99": 991.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 110.0,
+          "baseline": 881.0,
+          "current": 991.0,
+          "percent_change": 12.485811577752553
+        },
+        "p95_comparison": {
+          "absolute_change": 110.0,
+          "baseline": 881.0,
+          "current": 991.0,
+          "percent_change": 12.485811577752553
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 47.0,
+          "mean": 47.0,
+          "median": 47.0,
+          "min": 47.0,
+          "n": 20,
+          "p95": 47.0,
+          "p99": 47.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 47.0,
+          "mean": 47.0,
+          "median": 47.0,
+          "min": 47.0,
+          "n": 20,
+          "p95": 47.0,
+          "p99": 47.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 47.0,
+          "current": 47.0,
+          "percent_change": 0.0
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 47.0,
+          "current": 47.0,
+          "percent_change": 0.0
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 283.0,
+          "mean": 283.0,
+          "median": 283.0,
+          "min": 283.0,
+          "n": 20,
+          "p95": 283.0,
+          "p99": 283.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 323.0,
+          "mean": 323.0,
+          "median": 323.0,
+          "min": 323.0,
+          "n": 20,
+          "p95": 323.0,
+          "p99": 323.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 40.0,
+          "baseline": 283.0,
+          "current": 323.0,
+          "percent_change": 14.13427561837456
+        },
+        "p95_comparison": {
+          "absolute_change": 40.0,
+          "baseline": 283.0,
+          "current": 323.0,
+          "percent_change": 14.13427561837456
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.45,
+          "mean": 0.3675,
+          "median": 0.365,
+          "min": 0.31,
+          "n": 20,
+          "p95": 0.43,
+          "p99": 0.45,
+          "stddev": 0.03242400020777332
+        },
+        "current": {
+          "max": 0.43,
+          "mean": 0.36950000000000005,
+          "median": 0.38,
+          "min": 0.31,
+          "n": 20,
+          "p95": 0.43,
+          "p99": 0.43,
+          "stddev": 0.03748332962798262
+        },
+        "median_comparison": {
+          "absolute_change": 0.015000000000000013,
+          "baseline": 0.365,
+          "current": 0.38,
+          "percent_change": 4.109589041095894
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 0.43,
+          "current": 0.43,
+          "percent_change": 0.0
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 1.79,
+          "mean": 1.675,
+          "median": 1.66,
+          "min": 1.6,
+          "n": 20,
+          "p95": 1.74,
+          "p99": 1.79,
+          "stddev": 0.04957715942691863
+        },
+        "current": {
+          "max": 1.94,
+          "mean": 1.8335000000000001,
+          "median": 1.8650000000000002,
+          "min": 1.56,
+          "n": 20,
+          "p95": 1.94,
+          "p99": 1.94,
+          "stddev": 0.10810691588958538
+        },
+        "median_comparison": {
+          "absolute_change": 0.2050000000000003,
+          "baseline": 1.66,
+          "current": 1.8650000000000002,
+          "percent_change": 12.349397590361464
+        },
+        "p95_comparison": {
+          "absolute_change": 0.19999999999999996,
+          "baseline": 1.74,
+          "current": 1.94,
+          "percent_change": 11.494252873563216
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 4.712848376017064,
+          "mean": 3.23673747171415,
+          "median": 3.2536097784759477,
+          "min": 2.488678563153371,
+          "n": 20,
+          "p95": 4.114650303963572,
+          "p99": 4.712848376017064,
+          "stddev": 0.5510086255428422
+        },
+        "current": {
+          "max": 3.45629113400355,
+          "mean": 2.8246709201019256,
+          "median": 2.8070488405646756,
+          "min": 2.1879891480784863,
+          "n": 20,
+          "p95": 3.4422577838413417,
+          "p99": 3.45629113400355,
+          "stddev": 0.4068968727832396
+        },
+        "median_comparison": {
+          "absolute_change": -0.44656093791127205,
+          "baseline": 3.2536097784759477,
+          "current": 2.8070488405646756,
+          "percent_change": -13.725092076667217
+        },
+        "p95_comparison": {
+          "absolute_change": -0.67239252012223,
+          "baseline": 4.114650303963572,
+          "current": 3.4422577838413417,
+          "percent_change": -16.341425648603135
+        }
+      }
+    },
+    "failure_summary": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 70.35298477435884,
+          "mean": 63.66571515862985,
+          "median": 64.83936558856811,
+          "min": 53.9717604240357,
+          "n": 10,
+          "p95": 70.35298477435884,
+          "p99": 70.35298477435884,
+          "stddev": 5.58252507996451
+        },
+        "current": {
+          "max": 68.6034862788458,
+          "mean": 64.6422630031146,
+          "median": 66.0761114058439,
+          "min": 56.45654155544095,
+          "n": 10,
+          "p95": 68.6034862788458,
+          "p99": 68.6034862788458,
+          "stddev": 3.921047699637291
+        },
+        "median_comparison": {
+          "absolute_change": 1.2367458172757892,
+          "baseline": 64.83936558856811,
+          "current": 66.0761114058439,
+          "percent_change": 1.9073996268307736
+        },
+        "p95_comparison": {
+          "absolute_change": -1.7494984955130377,
+          "baseline": 70.35298477435884,
+          "current": 68.6034862788458,
+          "percent_change": -2.4867438121128123
+        }
+      },
+      "current_exit_codes": [
+        1
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 11448320.0,
+          "mean": 11301273.6,
+          "median": 11288576.0,
+          "min": 11206656.0,
+          "n": 10,
+          "p95": 11448320.0,
+          "p99": 11448320.0,
+          "stddev": 89415.26199729241
+        },
+        "current": {
+          "max": 11501568.0,
+          "mean": 11207884.8,
+          "median": 11165696.0,
+          "min": 10944512.0,
+          "n": 10,
+          "p95": 11501568.0,
+          "p99": 11501568.0,
+          "stddev": 184204.16310701438
+        },
+        "median_comparison": {
+          "absolute_change": -122880.0,
+          "baseline": 11288576.0,
+          "current": 11165696.0,
+          "percent_change": -1.0885341074020318
+        },
+        "p95_comparison": {
+          "absolute_change": 53248.0,
+          "baseline": 11448320.0,
+          "current": 11501568.0,
+          "percent_change": 0.46511627906976744
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 314.0,
+          "mean": 314.0,
+          "median": 314.0,
+          "min": 314.0,
+          "n": 10,
+          "p95": 314.0,
+          "p99": 314.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 63.0,
+          "mean": 63.0,
+          "median": 63.0,
+          "min": 63.0,
+          "n": 10,
+          "p95": 63.0,
+          "p99": 63.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": -251.0,
+          "baseline": 314.0,
+          "current": 63.0,
+          "percent_change": -79.93630573248409
+        },
+        "p95_comparison": {
+          "absolute_change": -251.0,
+          "baseline": 314.0,
+          "current": 63.0,
+          "percent_change": -79.93630573248409
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 10,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 10,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 78.0,
+          "mean": 78.0,
+          "median": 78.0,
+          "min": 78.0,
+          "n": 10,
+          "p95": 78.0,
+          "p99": 78.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 15.0,
+          "mean": 15.0,
+          "median": 15.0,
+          "min": 15.0,
+          "n": 10,
+          "p95": 15.0,
+          "p99": 15.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": -63.0,
+          "baseline": 78.0,
+          "current": 15.0,
+          "percent_change": -80.76923076923077
+        },
+        "p95_comparison": {
+          "absolute_change": -63.0,
+          "baseline": 78.0,
+          "current": 15.0,
+          "percent_change": -80.76923076923077
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.35,
+          "mean": 0.321,
+          "median": 0.32,
+          "min": 0.31,
+          "n": 10,
+          "p95": 0.35,
+          "p99": 0.35,
+          "stddev": 0.012866839377079185
+        },
+        "current": {
+          "max": 0.25,
+          "mean": 0.223,
+          "median": 0.22,
+          "min": 0.21,
+          "n": 10,
+          "p95": 0.25,
+          "p99": 0.25,
+          "stddev": 0.014181364924121767
+        },
+        "median_comparison": {
+          "absolute_change": -0.1,
+          "baseline": 0.32,
+          "current": 0.22,
+          "percent_change": -31.25
+        },
+        "p95_comparison": {
+          "absolute_change": -0.09999999999999998,
+          "baseline": 0.35,
+          "current": 0.25,
+          "percent_change": -28.571428571428566
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 0.34,
+          "mean": 0.336,
+          "median": 0.34,
+          "min": 0.33,
+          "n": 10,
+          "p95": 0.34,
+          "p99": 0.34,
+          "stddev": 0.005163977794943227
+        },
+        "current": {
+          "max": 0.24,
+          "mean": 0.227,
+          "median": 0.23,
+          "min": 0.22,
+          "n": 10,
+          "p95": 0.24,
+          "p99": 0.24,
+          "stddev": 0.0067494855771055295
+        },
+        "median_comparison": {
+          "absolute_change": -0.11000000000000001,
+          "baseline": 0.34,
+          "current": 0.23,
+          "percent_change": -32.35294117647059
+        },
+        "p95_comparison": {
+          "absolute_change": -0.10000000000000003,
+          "baseline": 0.34,
+          "current": 0.24,
+          "percent_change": -29.41176470588236
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 1.2043335160706192,
+          "mean": 1.0386894332012162,
+          "median": 1.0103683585766703,
+          "min": 0.923912470927462,
+          "n": 10,
+          "p95": 1.2043335160706192,
+          "p99": 1.2043335160706192,
+          "stddev": 0.0880941375731266
+        },
+        "current": {
+          "max": 0.7782624941319227,
+          "mean": 0.6983313073404134,
+          "median": 0.6780648845015094,
+          "min": 0.6483474529813975,
+          "n": 10,
+          "p95": 0.7782624941319227,
+          "p99": 0.7782624941319227,
+          "stddev": 0.05064657842246507
+        },
+        "median_comparison": {
+          "absolute_change": -0.3323034740751609,
+          "baseline": 1.0103683585766703,
+          "current": 0.6780648845015094,
+          "percent_change": -32.88933894795406
+        },
+        "p95_comparison": {
+          "absolute_change": -0.4260710219386965,
+          "baseline": 1.2043335160706192,
+          "current": 0.7782624941319227,
+          "percent_change": -35.37815864569136
+        }
+      }
+    },
+    "injection_markdown": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 71.3949429179141,
+          "mean": 60.952009020122205,
+          "median": 64.07063508581965,
+          "min": 40.30596526071306,
+          "n": 10,
+          "p95": 71.3949429179141,
+          "p99": 71.3949429179141,
+          "stddev": 9.27555779558656
+        },
+        "current": {
+          "max": 82.60295784725898,
+          "mean": 73.33028252792174,
+          "median": 73.73355938885194,
+          "min": 65.59075875670419,
+          "n": 10,
+          "p95": 82.60295784725898,
+          "p99": 82.60295784725898,
+          "stddev": 5.253628485931465
+        },
+        "median_comparison": {
+          "absolute_change": 9.662924303032298,
+          "baseline": 64.07063508581965,
+          "current": 73.73355938885194,
+          "percent_change": 15.081673983860561
+        },
+        "p95_comparison": {
+          "absolute_change": 11.208014929344884,
+          "baseline": 71.3949429179141,
+          "current": 82.60295784725898,
+          "percent_change": 15.698611794159193
+        }
+      },
+      "current_exit_codes": [
+        0
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 12091392.0,
+          "mean": 11829657.6,
+          "median": 11808768.0,
+          "min": 11583488.0,
+          "n": 10,
+          "p95": 12091392.0,
+          "p99": 12091392.0,
+          "stddev": 174297.51430317835
+        },
+        "current": {
+          "max": 12206080.0,
+          "mean": 12047155.2,
+          "median": 12058624.0,
+          "min": 11804672.0,
+          "n": 10,
+          "p95": 12206080.0,
+          "p99": 12206080.0,
+          "stddev": 154973.45294440308
+        },
+        "median_comparison": {
+          "absolute_change": 249856.0,
+          "baseline": 11808768.0,
+          "current": 12058624.0,
+          "percent_change": 2.115851543531044
+        },
+        "p95_comparison": {
+          "absolute_change": 114688.0,
+          "baseline": 12091392.0,
+          "current": 12206080.0,
+          "percent_change": 0.9485094850948509
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 459.0,
+          "mean": 459.0,
+          "median": 459.0,
+          "min": 459.0,
+          "n": 10,
+          "p95": 459.0,
+          "p99": 459.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 481.0,
+          "mean": 481.0,
+          "median": 481.0,
+          "min": 481.0,
+          "n": 10,
+          "p95": 481.0,
+          "p99": 481.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 22.0,
+          "baseline": 459.0,
+          "current": 481.0,
+          "percent_change": 4.793028322440087
+        },
+        "p95_comparison": {
+          "absolute_change": 22.0,
+          "baseline": 459.0,
+          "current": 481.0,
+          "percent_change": 4.793028322440087
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 33.0,
+          "mean": 33.0,
+          "median": 33.0,
+          "min": 33.0,
+          "n": 10,
+          "p95": 33.0,
+          "p99": 33.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 32.0,
+          "mean": 32.0,
+          "median": 32.0,
+          "min": 32.0,
+          "n": 10,
+          "p95": 32.0,
+          "p99": 32.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": -1.0,
+          "baseline": 33.0,
+          "current": 32.0,
+          "percent_change": -3.0303030303030303
+        },
+        "p95_comparison": {
+          "absolute_change": -1.0,
+          "baseline": 33.0,
+          "current": 32.0,
+          "percent_change": -3.0303030303030303
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 125.0,
+          "mean": 125.0,
+          "median": 125.0,
+          "min": 125.0,
+          "n": 10,
+          "p95": 125.0,
+          "p99": 125.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 134.0,
+          "mean": 134.0,
+          "median": 134.0,
+          "min": 134.0,
+          "n": 10,
+          "p95": 134.0,
+          "p99": 134.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 9.0,
+          "baseline": 125.0,
+          "current": 134.0,
+          "percent_change": 7.199999999999999
+        },
+        "p95_comparison": {
+          "absolute_change": 9.0,
+          "baseline": 125.0,
+          "current": 134.0,
+          "percent_change": 7.199999999999999
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.28,
+          "mean": 0.252,
+          "median": 0.25,
+          "min": 0.23,
+          "n": 10,
+          "p95": 0.28,
+          "p99": 0.28,
+          "stddev": 0.016865480854231365
+        },
+        "current": {
+          "max": 0.3,
+          "mean": 0.272,
+          "median": 0.28,
+          "min": 0.21,
+          "n": 10,
+          "p95": 0.3,
+          "p99": 0.3,
+          "stddev": 0.03155242550986462
+        },
+        "median_comparison": {
+          "absolute_change": 0.030000000000000027,
+          "baseline": 0.25,
+          "current": 0.28,
+          "percent_change": 12.00000000000001
+        },
+        "p95_comparison": {
+          "absolute_change": 0.019999999999999962,
+          "baseline": 0.28,
+          "current": 0.3,
+          "percent_change": 7.142857142857128
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 0.42,
+          "mean": 0.40099999999999997,
+          "median": 0.4,
+          "min": 0.39,
+          "n": 10,
+          "p95": 0.42,
+          "p99": 0.42,
+          "stddev": 0.009944289260117518
+        },
+        "current": {
+          "max": 0.49,
+          "mean": 0.44000000000000006,
+          "median": 0.45,
+          "min": 0.37,
+          "n": 10,
+          "p95": 0.49,
+          "p99": 0.49,
+          "stddev": 0.04242640687119284
+        },
+        "median_comparison": {
+          "absolute_change": 0.04999999999999999,
+          "baseline": 0.4,
+          "current": 0.45,
+          "percent_change": 12.499999999999996
+        },
+        "p95_comparison": {
+          "absolute_change": 0.07,
+          "baseline": 0.42,
+          "current": 0.49,
+          "percent_change": 16.666666666666668
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 1.6126645170152187,
+          "mean": 1.101764863799326,
+          "median": 1.0052474264521152,
+          "min": 0.9104286290239543,
+          "n": 10,
+          "p95": 1.6126645170152187,
+          "p99": 1.6126645170152187,
+          "stddev": 0.2247688226430939
+        },
+        "current": {
+          "max": 1.1774608448613435,
+          "mean": 0.9798431183677166,
+          "median": 1.0357160229468718,
+          "min": 0.7021540331188589,
+          "n": 10,
+          "p95": 1.1774608448613435,
+          "p99": 1.1774608448613435,
+          "stddev": 0.15275156310480004
+        },
+        "median_comparison": {
+          "absolute_change": 0.03046859649475664,
+          "baseline": 1.0052474264521152,
+          "current": 1.0357160229468718,
+          "percent_change": 3.0309549363674004
+        },
+        "p95_comparison": {
+          "absolute_change": -0.43520367215387523,
+          "baseline": 1.6126645170152187,
+          "current": 1.1774608448613435,
+          "percent_change": -26.986621678721306
+        }
+      }
+    },
+    "large_summary": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 49.54389204769481,
+          "mean": 28.646983378823638,
+          "median": 26.01308279155099,
+          "min": 19.96453704138703,
+          "n": 20,
+          "p95": 41.12558654585139,
+          "p99": 49.54389204769481,
+          "stddev": 7.223928599980154
+        },
+        "current": {
+          "max": 85.6896541239475,
+          "mean": 76.62113269177561,
+          "median": 78.47403902146914,
+          "min": 53.05898497125941,
+          "n": 20,
+          "p95": 85.6097360635499,
+          "p99": 85.6896541239475,
+          "stddev": 8.809866997588115
+        },
+        "median_comparison": {
+          "absolute_change": 52.46095622991815,
+          "baseline": 26.01308279155099,
+          "current": 78.47403902146914,
+          "percent_change": 201.67143068086258
+        },
+        "p95_comparison": {
+          "absolute_change": 44.48414951769851,
+          "baseline": 41.12558654585139,
+          "current": 85.6097360635499,
+          "percent_change": 108.16660199630861
+        }
+      },
+      "current_exit_codes": [
+        0
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 18509824.0,
+          "mean": 16811417.6,
+          "median": 17113088.0,
+          "min": 15114240.0,
+          "n": 20,
+          "p95": 18190336.0,
+          "p99": 18509824.0,
+          "stddev": 1277990.8830791854
+        },
+        "current": {
+          "max": 18698240.0,
+          "mean": 18099404.8,
+          "median": 18249728.0,
+          "min": 14819328.0,
+          "n": 20,
+          "p95": 18673664.0,
+          "p99": 18698240.0,
+          "stddev": 843369.4415527578
+        },
+        "median_comparison": {
+          "absolute_change": 1136640.0,
+          "baseline": 17113088.0,
+          "current": 18249728.0,
+          "percent_change": 6.641933939684059
+        },
+        "p95_comparison": {
+          "absolute_change": 483328.0,
+          "baseline": 18190336.0,
+          "current": 18673664.0,
+          "percent_change": 2.6570592208961945
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 2353.0,
+          "mean": 2353.0,
+          "median": 2353.0,
+          "min": 2353.0,
+          "n": 20,
+          "p95": 2353.0,
+          "p99": 2353.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 2461.0,
+          "mean": 2461.0,
+          "median": 2461.0,
+          "min": 2461.0,
+          "n": 20,
+          "p95": 2461.0,
+          "p99": 2461.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 108.0,
+          "baseline": 2353.0,
+          "current": 2461.0,
+          "percent_change": 4.589885252868679
+        },
+        "p95_comparison": {
+          "absolute_change": 108.0,
+          "baseline": 2353.0,
+          "current": 2461.0,
+          "percent_change": 4.589885252868679
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 20,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 20,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 755.0,
+          "mean": 755.0,
+          "median": 755.0,
+          "min": 755.0,
+          "n": 20,
+          "p95": 755.0,
+          "p99": 755.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 784.0,
+          "mean": 784.0,
+          "median": 784.0,
+          "min": 784.0,
+          "n": 20,
+          "p95": 784.0,
+          "p99": 784.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 29.0,
+          "baseline": 755.0,
+          "current": 784.0,
+          "percent_change": 3.8410596026490067
+        },
+        "p95_comparison": {
+          "absolute_change": 29.0,
+          "baseline": 755.0,
+          "current": 784.0,
+          "percent_change": 3.8410596026490067
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.73,
+          "mean": 0.648,
+          "median": 0.64,
+          "min": 0.56,
+          "n": 20,
+          "p95": 0.71,
+          "p99": 0.73,
+          "stddev": 0.047083352740253714
+        },
+        "current": {
+          "max": 0.55,
+          "mean": 0.4495,
+          "median": 0.44,
+          "min": 0.38,
+          "n": 20,
+          "p95": 0.54,
+          "p99": 0.55,
+          "stddev": 0.05433570116463606
+        },
+        "median_comparison": {
+          "absolute_change": -0.2,
+          "baseline": 0.64,
+          "current": 0.44,
+          "percent_change": -31.25
+        },
+        "p95_comparison": {
+          "absolute_change": -0.16999999999999993,
+          "baseline": 0.71,
+          "current": 0.54,
+          "percent_change": -23.943661971830977
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 7.23,
+          "mean": 6.892,
+          "median": 7.0649999999999995,
+          "min": 5.89,
+          "n": 20,
+          "p95": 7.23,
+          "p99": 7.23,
+          "stddev": 0.3893395217003982
+        },
+        "current": {
+          "max": 6.58,
+          "mean": 5.3995,
+          "median": 5.305,
+          "min": 4.7,
+          "n": 20,
+          "p95": 6.53,
+          "p99": 6.58,
+          "stddev": 0.5140497108871456
+        },
+        "median_comparison": {
+          "absolute_change": -1.7599999999999998,
+          "baseline": 7.0649999999999995,
+          "current": 5.305,
+          "percent_change": -24.911535739561216
+        },
+        "p95_comparison": {
+          "absolute_change": -0.7000000000000002,
+          "baseline": 7.23,
+          "current": 6.53,
+          "percent_change": -9.681881051175658
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 36.264301971998066,
+          "mean": 27.551550915802363,
+          "median": 27.03227884240914,
+          "min": 15.743615766987205,
+          "n": 20,
+          "p95": 35.56824882212095,
+          "p99": 36.264301971998066,
+          "stddev": 5.57685680749352
+        },
+        "current": {
+          "max": 12.61302900314331,
+          "mean": 7.8039837903459555,
+          "median": 7.460550640476868,
+          "min": 6.132978274021298,
+          "n": 20,
+          "p95": 11.327016533119604,
+          "p99": 12.61302900314331,
+          "stddev": 1.6827453785280897
+        },
+        "median_comparison": {
+          "absolute_change": -19.571728201932274,
+          "baseline": 27.03227884240914,
+          "current": 7.460550640476868,
+          "percent_change": -72.40132552653125
+        },
+        "p95_comparison": {
+          "absolute_change": -24.241232289001346,
+          "baseline": 35.56824882212095,
+          "current": 11.327016533119604,
+          "percent_change": -68.1541349146349
+        }
+      }
+    },
+    "minimal_summary": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 78.36402730050534,
+          "mean": 72.53162492206654,
+          "median": 72.51668450240129,
+          "min": 68.69610971164263,
+          "n": 20,
+          "p95": 75.61007546082611,
+          "p99": 78.36402730050534,
+          "stddev": 2.2409523125414843
+        },
+        "current": {
+          "max": 67.1586192640168,
+          "mean": 61.94081182486558,
+          "median": 61.93060546674732,
+          "min": 55.3375053346082,
+          "n": 20,
+          "p95": 67.02289488246211,
+          "p99": 67.1586192640168,
+          "stddev": 3.305605019499578
+        },
+        "median_comparison": {
+          "absolute_change": -10.586079035653967,
+          "baseline": 72.51668450240129,
+          "current": 61.93060546674732,
+          "percent_change": -14.59812884206451
+        },
+        "p95_comparison": {
+          "absolute_change": -8.587180578363999,
+          "baseline": 75.61007546082611,
+          "current": 67.02289488246211,
+          "percent_change": -11.357190858529234
+        }
+      },
+      "current_exit_codes": [
+        0
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 11595776.0,
+          "mean": 11413913.6,
+          "median": 11440128.0,
+          "min": 11071488.0,
+          "n": 20,
+          "p95": 11583488.0,
+          "p99": 11595776.0,
+          "stddev": 135252.24551668362
+        },
+        "current": {
+          "max": 11927552.0,
+          "mean": 11550310.4,
+          "median": 11505664.0,
+          "min": 11206656.0,
+          "n": 20,
+          "p95": 11878400.0,
+          "p99": 11927552.0,
+          "stddev": 181205.64048569673
+        },
+        "median_comparison": {
+          "absolute_change": 65536.0,
+          "baseline": 11440128.0,
+          "current": 11505664.0,
+          "percent_change": 0.5728607232366631
+        },
+        "p95_comparison": {
+          "absolute_change": 294912.0,
+          "baseline": 11583488.0,
+          "current": 11878400.0,
+          "percent_change": 2.545968882602546
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 314.0,
+          "mean": 314.0,
+          "median": 314.0,
+          "min": 314.0,
+          "n": 20,
+          "p95": 314.0,
+          "p99": 314.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 418.0,
+          "mean": 418.0,
+          "median": 418.0,
+          "min": 418.0,
+          "n": 20,
+          "p95": 418.0,
+          "p99": 418.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 104.0,
+          "baseline": 314.0,
+          "current": 418.0,
+          "percent_change": 33.12101910828025
+        },
+        "p95_comparison": {
+          "absolute_change": 104.0,
+          "baseline": 314.0,
+          "current": 418.0,
+          "percent_change": 33.12101910828025
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 20,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 20,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 77.0,
+          "mean": 77.0,
+          "median": 77.0,
+          "min": 77.0,
+          "n": 20,
+          "p95": 77.0,
+          "p99": 77.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 105.0,
+          "mean": 105.0,
+          "median": 105.0,
+          "min": 105.0,
+          "n": 20,
+          "p95": 105.0,
+          "p99": 105.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 28.0,
+          "baseline": 77.0,
+          "current": 105.0,
+          "percent_change": 36.36363636363637
+        },
+        "p95_comparison": {
+          "absolute_change": 28.0,
+          "baseline": 77.0,
+          "current": 105.0,
+          "percent_change": 36.36363636363637
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.29,
+          "mean": 0.2695,
+          "median": 0.27,
+          "min": 0.26,
+          "n": 20,
+          "p95": 0.28,
+          "p99": 0.29,
+          "stddev": 0.008255779474818965
+        },
+        "current": {
+          "max": 0.23,
+          "mean": 0.223,
+          "median": 0.22,
+          "min": 0.21,
+          "n": 20,
+          "p95": 0.23,
+          "p99": 0.23,
+          "stddev": 0.007326950970650471
+        },
+        "median_comparison": {
+          "absolute_change": -0.05000000000000002,
+          "baseline": 0.27,
+          "current": 0.22,
+          "percent_change": -18.518518518518523
+        },
+        "p95_comparison": {
+          "absolute_change": -0.05000000000000002,
+          "baseline": 0.28,
+          "current": 0.23,
+          "percent_change": -17.85714285714286
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 0.33,
+          "mean": 0.3155,
+          "median": 0.32,
+          "min": 0.29,
+          "n": 20,
+          "p95": 0.33,
+          "p99": 0.33,
+          "stddev": 0.010500626547722618
+        },
+        "current": {
+          "max": 0.27,
+          "mean": 0.2605,
+          "median": 0.26,
+          "min": 0.25,
+          "n": 20,
+          "p95": 0.27,
+          "p99": 0.27,
+          "stddev": 0.005104177855340409
+        },
+        "median_comparison": {
+          "absolute_change": -0.06,
+          "baseline": 0.32,
+          "current": 0.26,
+          "percent_change": -18.75
+        },
+        "p95_comparison": {
+          "absolute_change": -0.06,
+          "baseline": 0.33,
+          "current": 0.27,
+          "percent_change": -18.18181818181818
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 0.856742155039683,
+          "mean": 0.8075815005344339,
+          "median": 0.8163387469248846,
+          "min": 0.7018526471219957,
+          "n": 20,
+          "p95": 0.8524173100013286,
+          "p99": 0.856742155039683,
+          "stddev": 0.04102239044498933
+        },
+        "current": {
+          "max": 0.8492931539658457,
+          "mean": 0.7827327691600658,
+          "median": 0.7850814020493999,
+          "min": 0.701252908911556,
+          "n": 20,
+          "p95": 0.8397424551658332,
+          "p99": 0.8492931539658457,
+          "stddev": 0.04527123231740918
+        },
+        "median_comparison": {
+          "absolute_change": -0.031257344875484705,
+          "baseline": 0.8163387469248846,
+          "current": 0.7850814020493999,
+          "percent_change": -3.8289674468141897
+        },
+        "p95_comparison": {
+          "absolute_change": -0.012674854835495353,
+          "baseline": 0.8524173100013286,
+          "current": 0.8397424551658332,
+          "percent_change": -1.4869307188841105
+        }
+      }
+    },
+    "stress_summary": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 76.35314733866146,
+          "mean": 67.54261264761425,
+          "median": 70.70990972619981,
+          "min": 48.56319770547813,
+          "n": 10,
+          "p95": 76.35314733866146,
+          "p99": 76.35314733866146,
+          "stddev": 9.715680834009012
+        },
+        "current": {
+          "max": 74.983978202396,
+          "mean": 71.60946605282113,
+          "median": 72.59763742941078,
+          "min": 65.48351315953676,
+          "n": 10,
+          "p95": 74.983978202396,
+          "p99": 74.983978202396,
+          "stddev": 3.3140254306859394
+        },
+        "median_comparison": {
+          "absolute_change": 1.8877277032109703,
+          "baseline": 70.70990972619981,
+          "current": 72.59763742941078,
+          "percent_change": 2.6696791305781
+        },
+        "p95_comparison": {
+          "absolute_change": -1.3691691362654552,
+          "baseline": 76.35314733866146,
+          "current": 74.983978202396,
+          "percent_change": -1.793205891294249
+        }
+      },
+      "current_exit_codes": [
+        0
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 13639680.0,
+          "mean": 13071974.4,
+          "median": 13051904.0,
+          "min": 12800000.0,
+          "n": 10,
+          "p95": 13639680.0,
+          "p99": 13639680.0,
+          "stddev": 223716.4390856326
+        },
+        "current": {
+          "max": 15572992.0,
+          "mean": 15315353.6,
+          "median": 15314944.0,
+          "min": 15044608.0,
+          "n": 10,
+          "p95": 15572992.0,
+          "p99": 15572992.0,
+          "stddev": 182295.77672635936
+        },
+        "median_comparison": {
+          "absolute_change": 2263040.0,
+          "baseline": 13051904.0,
+          "current": 15314944.0,
+          "percent_change": 17.33877294837596
+        },
+        "p95_comparison": {
+          "absolute_change": 1933312.0,
+          "baseline": 13639680.0,
+          "current": 15572992.0,
+          "percent_change": 14.174174174174173
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 350.0,
+          "mean": 350.0,
+          "median": 350.0,
+          "min": 350.0,
+          "n": 10,
+          "p95": 350.0,
+          "p99": 350.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 565.0,
+          "mean": 565.0,
+          "median": 565.0,
+          "min": 565.0,
+          "n": 10,
+          "p95": 565.0,
+          "p99": 565.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 215.0,
+          "baseline": 350.0,
+          "current": 565.0,
+          "percent_change": 61.42857142857143
+        },
+        "p95_comparison": {
+          "absolute_change": 215.0,
+          "baseline": 350.0,
+          "current": 565.0,
+          "percent_change": 61.42857142857143
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 10,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 10,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 85.0,
+          "mean": 85.0,
+          "median": 85.0,
+          "min": 85.0,
+          "n": 10,
+          "p95": 85.0,
+          "p99": 85.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 135.0,
+          "mean": 135.0,
+          "median": 135.0,
+          "min": 135.0,
+          "n": 10,
+          "p95": 135.0,
+          "p99": 135.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 50.0,
+          "baseline": 85.0,
+          "current": 135.0,
+          "percent_change": 58.82352941176471
+        },
+        "p95_comparison": {
+          "absolute_change": 50.0,
+          "baseline": 85.0,
+          "current": 135.0,
+          "percent_change": 58.82352941176471
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.37,
+          "mean": 0.337,
+          "median": 0.335,
+          "min": 0.31,
+          "n": 10,
+          "p95": 0.37,
+          "p99": 0.37,
+          "stddev": 0.021108186931983415
+        },
+        "current": {
+          "max": 0.31,
+          "mean": 0.294,
+          "median": 0.3,
+          "min": 0.27,
+          "n": 10,
+          "p95": 0.31,
+          "p99": 0.31,
+          "stddev": 0.014298407059684803
+        },
+        "median_comparison": {
+          "absolute_change": -0.03500000000000003,
+          "baseline": 0.335,
+          "current": 0.3,
+          "percent_change": -10.44776119402986
+        },
+        "p95_comparison": {
+          "absolute_change": -0.06,
+          "baseline": 0.37,
+          "current": 0.31,
+          "percent_change": -16.216216216216218
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 0.62,
+          "mean": 0.606,
+          "median": 0.61,
+          "min": 0.59,
+          "n": 10,
+          "p95": 0.62,
+          "p99": 0.62,
+          "stddev": 0.008432740427115686
+        },
+        "current": {
+          "max": 0.59,
+          "mean": 0.581,
+          "median": 0.58,
+          "min": 0.56,
+          "n": 10,
+          "p95": 0.59,
+          "p99": 0.59,
+          "stddev": 0.009944289260117515
+        },
+        "median_comparison": {
+          "absolute_change": -0.030000000000000027,
+          "baseline": 0.61,
+          "current": 0.58,
+          "percent_change": -4.9180327868852505
+        },
+        "p95_comparison": {
+          "absolute_change": -0.030000000000000027,
+          "baseline": 0.62,
+          "current": 0.59,
+          "percent_change": -4.8387096774193585
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 1.956213850993663,
+          "mean": 1.4266086080810054,
+          "median": 1.3525839345529675,
+          "min": 1.2180244461633265,
+          "n": 10,
+          "p95": 1.956213850993663,
+          "p99": 1.956213850993663,
+          "stddev": 0.24002827518072561
+        },
+        "current": {
+          "max": 1.3591207268182188,
+          "mean": 1.224961989093572,
+          "median": 1.2249489160021767,
+          "min": 1.1115754179190844,
+          "n": 10,
+          "p95": 1.3591207268182188,
+          "p99": 1.3591207268182188,
+          "stddev": 0.0779472801878499
+        },
+        "median_comparison": {
+          "absolute_change": -0.12763501855079085,
+          "baseline": 1.3525839345529675,
+          "current": 1.2249489160021767,
+          "percent_change": -9.43638433743297
+        },
+        "p95_comparison": {
+          "absolute_change": -0.5970931241754442,
+          "baseline": 1.956213850993663,
+          "current": 1.3591207268182188,
+          "percent_change": -30.522896250435476
+        }
+      }
+    },
+    "typical_summary": {
+      "baseline_exit_codes": [
+        0
+      ],
+      "cpu_percent": {
+        "baseline": {
+          "max": 42.79856828279115,
+          "mean": 28.80061080669293,
+          "median": 27.987641793697996,
+          "min": 16.071517254450793,
+          "n": 20,
+          "p95": 42.3375285017801,
+          "p99": 42.79856828279115,
+          "stddev": 8.495959915858096
+        },
+        "current": {
+          "max": 87.60874336732125,
+          "mean": 76.88054645615587,
+          "median": 79.3498664815099,
+          "min": 61.6306581162404,
+          "n": 20,
+          "p95": 84.10060279130255,
+          "p99": 87.60874336732125,
+          "stddev": 7.139398595743429
+        },
+        "median_comparison": {
+          "absolute_change": 51.36222468781191,
+          "baseline": 27.987641793697996,
+          "current": 79.3498664815099,
+          "percent_change": 183.51751486035238
+        },
+        "p95_comparison": {
+          "absolute_change": 41.76307428952245,
+          "baseline": 42.3375285017801,
+          "current": 84.10060279130255,
+          "percent_change": 98.64315600700807
+        }
+      },
+      "current_exit_codes": [
+        0
+      ],
+      "max_rss_bytes": {
+        "baseline": {
+          "max": 12947456.0,
+          "mean": 12586803.2,
+          "median": 12646400.0,
+          "min": 11206656.0,
+          "n": 20,
+          "p95": 12931072.0,
+          "p99": 12947456.0,
+          "stddev": 396706.9737337756
+        },
+        "current": {
+          "max": 13209600.0,
+          "mean": 12955648.0,
+          "median": 12947456.0,
+          "min": 12615680.0,
+          "n": 20,
+          "p95": 13144064.0,
+          "p99": 13209600.0,
+          "stddev": 133607.47667701833
+        },
+        "median_comparison": {
+          "absolute_change": 301056.0,
+          "baseline": 12646400.0,
+          "current": 12947456.0,
+          "percent_change": 2.3805668016194335
+        },
+        "p95_comparison": {
+          "absolute_change": 212992.0,
+          "baseline": 12931072.0,
+          "current": 13144064.0,
+          "percent_change": 1.6471333544504276
+        }
+      },
+      "stdout_bytes": {
+        "baseline": {
+          "max": 827.0,
+          "mean": 827.0,
+          "median": 827.0,
+          "min": 827.0,
+          "n": 20,
+          "p95": 827.0,
+          "p99": 827.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 934.0,
+          "mean": 934.0,
+          "median": 934.0,
+          "min": 934.0,
+          "n": 20,
+          "p95": 934.0,
+          "p99": 934.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 107.0,
+          "baseline": 827.0,
+          "current": 934.0,
+          "percent_change": 12.93833131801693
+        },
+        "p95_comparison": {
+          "absolute_change": 107.0,
+          "baseline": 827.0,
+          "current": 934.0,
+          "percent_change": 12.93833131801693
+        }
+      },
+      "stdout_lines": {
+        "baseline": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 20,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "min": 1.0,
+          "n": 20,
+          "p95": 1.0,
+          "p99": 1.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        },
+        "p95_comparison": {
+          "absolute_change": 0.0,
+          "baseline": 1.0,
+          "current": 1.0,
+          "percent_change": 0.0
+        }
+      },
+      "stdout_tokens": {
+        "baseline": {
+          "max": 237.0,
+          "mean": 237.0,
+          "median": 237.0,
+          "min": 237.0,
+          "n": 20,
+          "p95": 237.0,
+          "p99": 237.0,
+          "stddev": 0.0
+        },
+        "current": {
+          "max": 266.0,
+          "mean": 266.0,
+          "median": 266.0,
+          "min": 266.0,
+          "n": 20,
+          "p95": 266.0,
+          "p99": 266.0,
+          "stddev": 0.0
+        },
+        "median_comparison": {
+          "absolute_change": 29.0,
+          "baseline": 237.0,
+          "current": 266.0,
+          "percent_change": 12.236286919831224
+        },
+        "p95_comparison": {
+          "absolute_change": 29.0,
+          "baseline": 237.0,
+          "current": 266.0,
+          "percent_change": 12.236286919831224
+        }
+      },
+      "sys_seconds": {
+        "baseline": {
+          "max": 0.45,
+          "mean": 0.3665,
+          "median": 0.37,
+          "min": 0.3,
+          "n": 20,
+          "p95": 0.45,
+          "p99": 0.45,
+          "stddev": 0.045569495798926954
+        },
+        "current": {
+          "max": 0.36,
+          "mean": 0.29,
+          "median": 0.29,
+          "min": 0.26,
+          "n": 20,
+          "p95": 0.32,
+          "p99": 0.36,
+          "stddev": 0.02316985337163698
+        },
+        "median_comparison": {
+          "absolute_change": -0.08000000000000002,
+          "baseline": 0.37,
+          "current": 0.29,
+          "percent_change": -21.621621621621625
+        },
+        "p95_comparison": {
+          "absolute_change": -0.13,
+          "baseline": 0.45,
+          "current": 0.32,
+          "percent_change": -28.888888888888893
+        }
+      },
+      "user_seconds": {
+        "baseline": {
+          "max": 2.11,
+          "mean": 1.884,
+          "median": 1.875,
+          "min": 1.67,
+          "n": 20,
+          "p95": 2.1,
+          "p99": 2.11,
+          "stddev": 0.14091430766697594
+        },
+        "current": {
+          "max": 1.68,
+          "mean": 1.5939999999999999,
+          "median": 1.615,
+          "min": 1.48,
+          "n": 20,
+          "p95": 1.66,
+          "p99": 1.68,
+          "stddev": 0.061078034642492125
+        },
+        "median_comparison": {
+          "absolute_change": -0.26,
+          "baseline": 1.875,
+          "current": 1.615,
+          "percent_change": -13.866666666666665
+        },
+        "p95_comparison": {
+          "absolute_change": -0.44000000000000017,
+          "baseline": 2.1,
+          "current": 1.66,
+          "percent_change": -20.95238095238096
+        }
+      },
+      "wall_seconds": {
+        "baseline": {
+          "max": 14.3732540209312,
+          "mean": 8.439072372403462,
+          "median": 7.941321639576927,
+          "min": 5.742288265842944,
+          "n": 20,
+          "p95": 12.515034866984934,
+          "p99": 14.3732540209312,
+          "stddev": 2.473554339042647
+        },
+        "current": {
+          "max": 3.2613638429902494,
+          "mean": 2.4791157378349453,
+          "median": 2.3997186430497095,
+          "min": 2.031760680023581,
+          "n": 20,
+          "p95": 3.072267750976607,
+          "p99": 3.2613638429902494,
+          "stddev": 0.33120073844713455
+        },
+        "median_comparison": {
+          "absolute_change": -5.541602996527217,
+          "baseline": 7.941321639576927,
+          "current": 2.3997186430497095,
+          "percent_change": -69.78187319488102
+        },
+        "p95_comparison": {
+          "absolute_change": -9.442767116008326,
+          "baseline": 12.515034866984934,
+          "current": 3.072267750976607,
+          "percent_change": -75.45138480531645
+        }
+      }
+    }
+  }
+}

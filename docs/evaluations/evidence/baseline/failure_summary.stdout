@@ -1,0 +1,1 @@
+{"branch":"main","files":[],"likely_purpose":"No changes detected","recent_commits":["f81b98c benchmark fixture baseline"],"repo":"failure","risk_areas":["No high-risk patterns detected (heuristic check only)"],"summary":{"files_changed":0,"lines_added":0,"lines_removed":0},"tool":"patchbrief","version":"1.0.0"}

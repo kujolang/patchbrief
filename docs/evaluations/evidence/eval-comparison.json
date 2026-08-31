@@ -1,0 +1,1 @@
+{"data":{"improvement":true,"regression":false,"run_a":{"failed":3,"name":"patchbrief-hardening-baseline","passed":5,"total":8},"run_b":{"failed":0,"name":"patchbrief-hardening-current","passed":8,"total":8},"summary":"IMPROVEMENT: 3 more passes"},"error":"","ok":true}
