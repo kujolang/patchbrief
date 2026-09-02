@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  KUJO_VERSION: v1.2.0
+  KUJO_VERSION: v1.2.2
 
 jobs:
   contract-tests:
@@ -19,9 +19,9 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
       - name: Install pinned Kujo runtime
-        uses: kujolang/kujo/.github/actions/setup-kujo@ed51720892d8e475980909dffe54c8fba8731e11
+        uses: kujolang/kujo/.github/actions/setup-kujo@22582e7f0111a1005002579b44f5d03cd2ed1c9c
         with:
-          version: v1.2.0
+          version: v1.2.2
 
       - name: Verify runtime
         run: kujo --version
