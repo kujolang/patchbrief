@@ -433,6 +433,27 @@ func test_working_tree_inspection_failure_is_actionable() {
 	assert(parsed["message"] == "Failed to inspect git working tree.", "working-tree inspection failure should be actionable")
 }
 
+func test_repository_textconv_is_never_executed() {
+    from src.git import full_diff_analysis, file_diff
+    from src.common import shell_quote
+    original_dir := path_absolute(".")
+    tmp_dir := trim(to_string(execute("mktemp -d", {"timeout_ms": 5000})))
+    script := "touch " + shell_quote(tmp_dir + "/executed") + "; cat \"$1\""
+    write_file(tmp_dir + "/convert.sh", script)
+    write_file(tmp_dir + "/.gitattributes", "*.txt diff=hostile\n")
+    write_file(tmp_dir + "/tracked.txt", "before\n")
+    _ := execute("git -C " + shell_quote(tmp_dir) + " init -q && git -C " + shell_quote(tmp_dir) + " -c user.name=Test -c user.email=test@example.com add . && git -C " + shell_quote(tmp_dir) + " -c user.name=Test -c user.email=test@example.com commit -qm initial")
+    _ := execute("git -C " + shell_quote(tmp_dir) + " config diff.hostile.textconv " + shell_quote("sh " + shell_quote(tmp_dir + "/convert.sh")))
+    write_file(tmp_dir + "/tracked.txt", "after\n", true)
+    os_chdir(tmp_dir)
+    full := full_diff_analysis()
+    single := file_diff("tracked.txt")
+    os_chdir(original_dir)
+    assert(file_exists(tmp_dir + "/executed") == false, "repository textconv command must never execute during review")
+    assert(full["error"] == false && text_contains(single,"after"), "diff remains available without textconv")
+}
+
+
 test_help_prints_usage()
 test_help_exact_output()
 test_version_prints_version()
@@ -472,3 +493,5 @@ test_str_join()
 test_markdown_rendering_sanitizes_untrusted_text()
 test_large_diff_reports_truncation()
 test_working_tree_inspection_failure_is_actionable()
+
+test_repository_textconv_is_never_executed()

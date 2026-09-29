@@ -78,7 +78,7 @@ export func repo_name() {
 # Get the diff stat summary (files changed, insertions, deletions).
 export func diff_stat() {
 	try {
-		output := execute("git diff --no-ext-diff --stat HEAD 2>/dev/null", {"timeout_ms": 10000})
+		output := execute("git diff --no-ext-diff --no-textconv --stat HEAD 2>/dev/null", {"timeout_ms": 10000})
 		text := to_string(output)
 		if str_trim(text) == "" {
 			return {"ok": true, "output": "", "files": 0, "added": 0, "removed": 0}
@@ -187,10 +187,10 @@ export func full_diff_analysis_with_limit(max_bytes) {
 		limit = 16777216
 	}
 	try {
-		result := spawn_process(["git", "diff", "--no-ext-diff", "HEAD"], {"timeout_ms": 30000, "max_output_bytes": limit})
+		result := spawn_process(["git", "diff", "--no-ext-diff", "--no-textconv", "HEAD"], {"timeout_ms": 30000, "max_output_bytes": limit})
 		if result.success == false && result.timed_out == false {
 			# An unborn repository has no HEAD; compare its index with the empty tree.
-			result = spawn_process(["git", "diff", "--no-ext-diff", "--cached"], {"timeout_ms": 30000, "max_output_bytes": limit})
+			result = spawn_process(["git", "diff", "--no-ext-diff", "--no-textconv", "--cached"], {"timeout_ms": 30000, "max_output_bytes": limit})
 		}
 		text := to_string(result.stdout)
 		failed := result.success == false || result.timed_out == true
@@ -209,7 +209,7 @@ export func full_diff_analysis_with_limit(max_bytes) {
 # Get the diff for a specific file.
 export func file_diff(file_path) {
 	try {
-		cmd := "git diff --no-ext-diff HEAD -- " + shell_quote(file_path)
+		cmd := "git diff --no-ext-diff --no-textconv HEAD -- " + shell_quote(file_path)
 		output := execute(cmd, {"timeout_ms": 10000})
 		return to_string(output)
 	} except err {

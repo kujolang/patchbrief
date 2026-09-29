@@ -15,3 +15,7 @@ by the JSON serializer, so consumers must still treat those values as untrusted.
 Content-based heuristics inspect at most 1 MiB of tracked diff data. Reports
 expose `analysis.diff_truncated` and `analysis.diff_error`, and add a risk note
 when the bound is reached or diff inspection fails.
+
+## Repository diff drivers
+
+Diff inspection disables both external diff commands and textconv, including the unborn-repository fallback and single-file inspection. A regression fixture configures a textconv command that writes a canary; full and single-file diff inspection must leave it absent. This prevents that specific command-execution path. It does not make arbitrary Git repository configuration safe: review trusted local repositories or use an isolated, sanitized snapshot for hostile repositories. Git configuration, filters, hooks, executable lookup and tool dependencies remain part of the local trust boundary.
