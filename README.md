@@ -60,6 +60,10 @@ kujo run patchbrief.kujo -- handoff
 - Git (on PATH)
 - Run inside a git repository
 
+Git inspection uses bounded argv-based processes without a shell. Filenames are
+passed as data, and incomplete process output is treated as an inspection failure.
+Handoff timestamps use the native UTC clock.
+
 ## Running Tests
 
 ```bash
