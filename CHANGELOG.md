@@ -4,6 +4,20 @@ All notable changes to PatchBrief are documented here.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-14
+
+### Fixed
+
+- Run Git inspection through bounded argument-vector processes without shell authority; use the native UTC clock for handoffs.
+- Disable Git text conversion and external diff commands during review, and treat file pathspecs literally.
+- Reject failed, timed-out or truncated Git output instead of reporting a complete inspection.
+
+### Compatibility
+
+- Require Kujo 1.6.0 or newer; CLI commands and JSON shapes remain unchanged apart from the tool version.
+- Add real Git regression coverage in VM and interpreter modes on Linux, macOS and Windows.
+- Include the reproducible hardening evaluation harness and historical benchmark evidence; those measurements are not new release performance claims.
+
 ## [1.0.1] - 2026-08-30
 
 - Escaped repository-controlled text in Markdown reports to prevent structure and terminal-control injection while preserving exact JSON values.
