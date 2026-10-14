@@ -1,6 +1,6 @@
 # PatchBrief
 
-[![Version](https://img.shields.io/badge/version-1.0.1-black)](https://github.com/kujolang/patchbrief/releases/tag/v1.0.1)
+[![Version](https://img.shields.io/badge/version-1.0.2-black)](https://github.com/kujolang/patchbrief/releases/tag/v1.0.2)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 [![built with Kujo](https://img.shields.io/badge/built%20with-Kujo-white.svg)](https://github.com/kujolang/kujo)
 
@@ -56,7 +56,7 @@ kujo run patchbrief.kujo -- handoff
 
 ## Requirements
 
-- Kujo runtime (`kujo` binary)
+- Kujo 1.6.0 or newer (`kujo` binary)
 - Git (on PATH)
 - Run inside a git repository
 
@@ -109,7 +109,7 @@ docs/                   # Maintainer review notes and hardening backlogs
 
 ## Status
 
-PatchBrief 1.0.1 is stable for local rule-based review briefs, with passing contract tests and intentionally small scope. It is not a hosted review service or an enterprise policy engine.
+PatchBrief 1.0.2 is stable for local rule-based review briefs, with passing contract tests and intentionally small scope. It is not a hosted review service or an enterprise policy engine.
 
 The current JSON shapes are documented by
 [schemas/patchbrief-summary.schema.json](schemas/patchbrief-summary.schema.json)

@@ -2,9 +2,9 @@
 
 [project]
 name = "patchbrief"
-version = "1.0.1"
+version = "1.0.2"
 description = "Local developer tool that inspects git diffs and generates structured implementation briefs."
 
 [kujo]
-minimum_version = "0.1.0"
+minimum_version = "1.6.0"
 entry = "patchbrief.kujo"
