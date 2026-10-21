@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] - 2026-10-21
+
+- Update supported Node.js versions for portable Git tests and release tooling.
+- Preserve bounded local Git inspection, heuristic review briefs and JSON compatibility.
+
 All notable changes to PatchBrief are documented here.
 
 ## [Unreleased]
